@@ -3,49 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Horquilla - Juego Diario</title>
+  <title>LA HORQUILLA - JUEGO DIARIO</title>
+  <!-- Fuente Pixel Art Retro -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   
   <!-- MENÚ DE ARCHIVO -->
-  <div id="archive-view" class="archive-container show">
-    <h2>Archivo de Retos</h2>
-    <p>Días desbloqueados hasta hoy. ¡Juega los que te perdiste!</p>
+  <div id="archive-view" class="archive-container show pixel-box">
+    <h2>ARCHIVO DE NIVELES</h2>
+    <p>DÍAS DESBLOQUEADOS. ¡JUEGA LOS ANTERIORES!</p>
     <div id="days-grid" class="days-grid"></div>
   </div>
 
   <!-- JUEGO PRINCIPAL -->
   <div id="game-view" class="game-container hidden">
-    <header>
+    <header class="pixel-box">
       <div class="brand">
-        <h1>La Horquilla <span id="day-badge" class="badge">#Día -</span></h1>
-        <button id="btn-archive" class="btn-small">Ver Archivo</button>
+        <h1>LA HORQUILLA <span id="day-badge" class="badge">DÍA -</span></h1>
+        <button id="btn-archive" class="btn-pixel small-btn">ARCHIVO</button>
       </div>
       <div class="stats-row">
         <div class="status-group">
-          <span>Salud</span>
+          <span>SALUD:</span>
           <div class="health-bar-bg"><div id="health-fill" class="health-bar-fill"></div></div>
           <span id="health-text" class="mono">100%</span>
         </div>
         <div class="status-group">
-          <span>Vidas</span>
+          <span>VIDAS:</span>
           <span id="lives-display" class="lives">❤️❤️❤️</span>
         </div>
       </div>
     </header>
 
-    <div class="question-card">
+    <div class="question-card pixel-box">
       <div class="question-header">
-        <span id="question-number" class="q-number">Pregunta - de -</span>
-        <span id="cost-val" class="cost-badge">Coste: 0%</span>
+        <span id="question-number" class="q-number">PREGUNTA - / -</span>
+        <span id="cost-val" class="cost-badge">COSTE: 0%</span>
       </div>
-      <h2 id="question-text" class="question-title">Cargando...</h2>
+      <h2 id="question-text" class="question-title">CARGANDO MODO ARCADE...</h2>
       
       <div class="range-picker" id="range-container">
         <div class="slider-track"></div>
         <div id="slider-selection" class="slider-selection"></div>
-        <div id="target-needle" class="target-needle"><div class="needle-head"></div></div>
+        <div id="target-needle" class="target-needle">
+          <div class="needle-head"></div>
+        </div>
+        <!-- SLIDERS -->
         <input type="range" id="min-slider" value="0">
         <input type="range" id="max-slider" value="100">
       </div>
@@ -56,7 +61,7 @@
       </div>
 
       <div id="feedback-text" class="feedback"></div>
-      <button id="action-btn">Cargando...</button>
+      <button id="action-btn" class="btn-pixel">CARGANDO...</button>
     </div>
   </div>
 

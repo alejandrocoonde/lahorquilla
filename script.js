@@ -2,11 +2,16 @@ let gameData = null;
 let currentOfficialDay = 1;
 let playingDay = null;
 
-// Estado en LocalStorage
+// Estado en LocalStorage (añadidos daño total y estado de reseteo)
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
   history: {}, 
   activeSession: null 
 };
+
+// Variables de partida
+let currentIdx = 0, health = 100, lives = 3, isAnswered = false;
+let totalDamage = 0;
+let pendingHealthReset = false; // Indica si hay que curar en el próximo turno
 
 // Elementos DOM
 const minSlider = document.getElementById('min-slider');
@@ -53,20 +58,20 @@ function renderArchive() {
     const dataExists = gameData.retos.find(r => r.dia === i);
     
     if (!dataExists) {
-      btn.innerHTML = `Día ${i}<br><span>Próximamente</span>`;
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">PRÓX.</span>`;
       btn.disabled = true;
     } else {
       const historyRecord = savedState.history[i];
       if (historyRecord) {
-        btn.innerHTML = `Día ${i}<br><span>${historyRecord.status === 'won' ? 'Superado' : 'Fallado'}</span>`;
+        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">${historyRecord.status === 'won' ? 'GANADO' : 'PERDIDO'}</span>`;
         btn.classList.add(historyRecord.status);
         btn.disabled = true; 
       } else if (savedState.activeSession && savedState.activeSession.dia === i) {
-        btn.innerHTML = `Día ${i}<br><span>Continuar</span>`;
+        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">SEGUIR</span>`;
         btn.classList.add('resume');
         btn.onclick = () => startGame(i, true);
       } else {
-        btn.innerHTML = `Día ${i}<br><span>Jugar</span>`;
+        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">JUGAR</span>`;
         btn.onclick = () => startGame(i, false);
       }
     }
@@ -75,8 +80,6 @@ function renderArchive() {
 }
 
 // 3. Control de Partida
-let currentIdx = 0, health = 100, lives = 3, isAnswered = false;
-
 function startGame(diaId, isResume) {
   playingDay = gameData.retos.find(r => r.dia === diaId);
   
@@ -84,17 +87,24 @@ function startGame(diaId, isResume) {
     currentIdx = savedState.activeSession.qIdx;
     health = savedState.activeSession.health;
     lives = savedState.activeSession.lives;
+    totalDamage = savedState.activeSession.totalDamage || 0;
+    pendingHealthReset = savedState.activeSession.pendingHealthReset || false;
   } else {
     currentIdx = 0;
     health = 100;
     lives = 3;
-    savedState.activeSession = { dia: diaId, qIdx: 0, health: 100, lives: 3 };
+    totalDamage = 0;
+    pendingHealthReset = false;
+    savedState.activeSession = { dia: diaId, qIdx: 0, health: 100, lives: 3, totalDamage: 0, pendingHealthReset: false };
     saveStateToLocal();
   }
 
-  document.getElementById('day-badge').textContent = `#Día ${diaId}`;
-  document.getElementById('health-fill').style.width = health + '%';
-  document.getElementById('health-text').textContent = health + '%';
+  document.getElementById('day-badge').textContent = `DÍA ${diaId}`;
+  
+  // Si en la ronda anterior te mataron y lo dejaste a medias, recupera la vida ahora.
+  if (pendingHealthReset) applyHealthReset(); 
+  else updateHealthUI();
+
   document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
 
   archiveView.classList.remove('show');
@@ -103,9 +113,20 @@ function startGame(diaId, isResume) {
   loadQuestion(currentIdx);
 }
 
+function applyHealthReset() {
+  health = 100;
+  pendingHealthReset = false;
+  updateHealthUI();
+}
+
+function updateHealthUI() {
+  document.getElementById('health-fill').style.width = Math.max(0, health) + '%';
+  document.getElementById('health-text').textContent = Math.max(0, health) + '%';
+}
+
 function loadQuestion(idx) {
   const q = playingDay.preguntas[idx];
-  document.getElementById('question-number').textContent = `Pregunta ${idx + 1} de ${playingDay.preguntas.length}`;
+  document.getElementById('question-number').textContent = `PREGUNTA ${idx + 1} / ${playingDay.preguntas.length}`;
   document.getElementById('question-text').textContent = q.texto;
 
   minSlider.min = q.min; minSlider.max = q.max; minSlider.value = q.min;
@@ -113,27 +134,40 @@ function loadQuestion(idx) {
 
   targetNeedle.classList.remove('anim-drop');
   targetNeedle.style.display = 'none';
-  sliderSelection.classList.remove('pulse-success', 'pulse-error');
-  feedbackTxt.textContent = '';
+  feedbackTxt.innerHTML = '';
   feedbackTxt.className = 'feedback';
   
   isAnswered = false;
-  actionBtn.textContent = 'Confirmar Horquilla';
-  actionBtn.style.background = 'var(--text)';
+  actionBtn.textContent = 'CONFIRMAR HORQUILLA';
+  actionBtn.style.background = 'var(--accent)';
+  actionBtn.style.color = '#000';
   actionBtn.disabled = false;
   
   minSlider.style.pointerEvents = 'auto';
   maxSlider.style.pointerEvents = 'auto';
+  // FIX OVERLAP: Reset Z-index
+  minSlider.style.zIndex = 5;
+  maxSlider.style.zIndex = 5;
 
   updateSliders();
 }
+
+// Control Z-index Dinámico (El que tocas se pone delante)
+minSlider.addEventListener('input', (e) => {
+  minSlider.style.zIndex = 10; maxSlider.style.zIndex = 5;
+  updateSliders();
+});
+maxSlider.addEventListener('input', (e) => {
+  maxSlider.style.zIndex = 10; minSlider.style.zIndex = 5;
+  updateSliders();
+});
 
 function updateSliders() {
   let minVal = parseInt(minSlider.value);
   let maxVal = parseInt(maxSlider.value);
 
   if (minVal > maxVal) {
-    if (event && event.target === minSlider) minSlider.value = maxVal;
+    if (document.activeElement === minSlider) minSlider.value = maxVal;
     else maxSlider.value = minVal;
     minVal = parseInt(minSlider.value);
     maxVal = parseInt(maxSlider.value);
@@ -150,8 +184,16 @@ function updateSliders() {
   minValTxt.textContent = `${minVal} ${q.unidad}`;
   maxValTxt.textContent = `${maxVal} ${q.unidad}`;
   
-  costValTxt.textContent = `Coste: ${costPercent}%`;
-  costValTxt.style.color = costPercent > health ? 'var(--danger)' : 'var(--text-muted)';
+  costValTxt.textContent = `COSTE: ${costPercent}%`;
+  
+  // Cambia a rojo si el coste actual es letal
+  if (costPercent >= health) {
+    costValTxt.style.color = 'var(--danger)';
+    costValTxt.style.borderColor = 'var(--danger)';
+  } else {
+    costValTxt.style.color = '#fff';
+    costValTxt.style.borderColor = 'var(--accent)';
+  }
 }
 
 function handleAction() {
@@ -163,63 +205,74 @@ function handleAction() {
     const costPercent = Math.round(((userMax - userMin) / range) * 100);
     const targetPercent = ((q.respuesta - q.min) / range) * 100;
 
-    if (costPercent > health) {
-      feedbackTxt.textContent = "No tienes suficiente salud.";
-      feedbackTxt.classList.add('show', 'error');
-      setTimeout(() => feedbackTxt.classList.remove('show'), 2000);
-      return;
-    }
-
     minSlider.style.pointerEvents = 'none';
     maxSlider.style.pointerEvents = 'none';
 
     targetNeedle.style.left = targetPercent + '%';
     targetNeedle.classList.add('anim-drop');
 
-    health = Math.max(0, health - costPercent);
-    document.getElementById('health-fill').style.width = health + '%';
-    document.getElementById('health-text').textContent = health + '%';
-
+    // Mecánica de Salud y Daño
+    totalDamage += costPercent;
+    health -= costPercent;
+    
     const isCorrect = q.respuesta >= userMin && q.respuesta <= userMax;
+    let lifeLost = false;
 
-    if (isCorrect) {
-      sliderSelection.classList.add('pulse-success');
-      feedbackTxt.textContent = `¡Correcto! Era ${q.respuesta}.`;
-      feedbackTxt.classList.add('show', 'success');
-    } else {
-      sliderSelection.classList.add('pulse-error');
+    if (!isCorrect || health <= 0) {
+      lifeLost = true;
       lives--;
-      document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
-      feedbackTxt.textContent = `¡Fallaste! Era ${q.respuesta}.`;
+      pendingHealthReset = true; // Regenerará al pasar de ronda
+      
+      if (!isCorrect) feedbackTxt.innerHTML = `¡FALLO!<br>ERA ${q.respuesta}.`;
+      else feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
+      
       feedbackTxt.classList.add('show', 'error');
+    } else {
+      feedbackTxt.innerHTML = `¡CORRECTO!<br>ERA ${q.respuesta}.`;
+      feedbackTxt.classList.add('show', 'success');
     }
 
+    updateHealthUI();
+    document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
+
     isAnswered = true;
+    
+    // Guardar Estado
     savedState.activeSession.health = health;
     savedState.activeSession.lives = lives;
+    savedState.activeSession.totalDamage = totalDamage;
+    savedState.activeSession.pendingHealthReset = pendingHealthReset;
 
-    if (lives <= 0 || health <= 0) {
-      actionBtn.textContent = 'Fin del Juego - Has Perdido';
-      actionBtn.disabled = true;
+    // Conclusión del turno
+    if (lives <= 0) {
+      actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
+      actionBtn.style.background = 'var(--danger)';
+      actionBtn.style.color = '#fff';
       endGame('lost');
     } else if (currentIdx < playingDay.preguntas.length - 1) {
-      actionBtn.textContent = 'Siguiente Pregunta';
+      actionBtn.textContent = 'SIGUIENTE PREGUNTA';
       savedState.activeSession.qIdx = currentIdx + 1;
       saveStateToLocal();
     } else {
-      actionBtn.textContent = '¡Nivel Superado!';
+      actionBtn.textContent = '¡NIVEL SUPERADO!';
       actionBtn.style.background = 'var(--success)';
-      actionBtn.disabled = true;
       endGame('won');
     }
   } else {
     currentIdx++;
+    if (pendingHealthReset) applyHealthReset();
     loadQuestion(currentIdx);
   }
 }
 
 function endGame(status) {
-  savedState.history[playingDay.dia] = { status: status, healthLeft: health, livesLeft: lives };
+  // Mostramos el daño total recibido
+  if (status === 'won') {
+    feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO TOTAL RECIBIDO: ${totalDamage}%`;
+    feedbackTxt.classList.replace('error', 'success');
+  }
+
+  savedState.history[playingDay.dia] = { status: status, totalDamage: totalDamage };
   savedState.activeSession = null;
   saveStateToLocal();
   
@@ -227,11 +280,9 @@ function endGame(status) {
     gameView.classList.add('hidden');
     archiveView.classList.add('show');
     renderArchive();
-  }, 2500);
+  }, 4000); // 4 segundos para ver las estadísticas finales antes de volver al menú
 }
 
 function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
 
-minSlider.addEventListener('input', updateSliders);
-maxSlider.addEventListener('input', updateSliders);
 actionBtn.addEventListener('click', handleAction);
