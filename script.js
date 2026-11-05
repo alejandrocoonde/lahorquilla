@@ -45,10 +45,9 @@ fetch('datos.json')
     currentOfficialDay = Math.max(1, dayDiff + 1);
     calculateStreak();
     renderArchive();
-    initCountdown(); // Iniciar cuenta atrás en vivo
+    initCountdown();
   });
 
-// Cuenta atrás para el día siguiente
 function initCountdown() {
   function updateTimer() {
     const now = new Date();
@@ -68,7 +67,6 @@ function initCountdown() {
   setInterval(updateTimer, 1000);
 }
 
-// Lógica de Racha
 function calculateStreak() {
   currentStreak = 0;
   for (let i = currentOfficialDay; i >= 1; i--) {
@@ -85,7 +83,7 @@ function calculateStreak() {
   document.getElementById('game-streak-text').textContent = currentStreak;
 }
 
-// Navegación de Vistas
+// Navegación de Vistas y Botones
 document.getElementById('btn-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
   gameView.classList.add('hidden');
@@ -99,6 +97,18 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   reviewView.classList.remove('show');
   reviewView.classList.add('hidden');
   archiveView.classList.add('show');
+});
+
+// Desplegar/Ocultar Archivo
+document.getElementById('btn-show-archive').addEventListener('click', () => {
+  const fullSection = document.getElementById('full-archive-section');
+  fullSection.classList.add('show-archive');
+  fullSection.scrollIntoView({ behavior: 'smooth' });
+});
+
+document.getElementById('btn-close-archive').addEventListener('click', () => {
+  document.getElementById('full-archive-section').classList.remove('show-archive');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // Modal de Estadísticas
@@ -173,42 +183,57 @@ document.getElementById('btn-share').addEventListener('click', () => {
   });
 });
 
-// 2. Archivo
+// Renderizar Cuadrículas (Reto actual + Archivo)
 function renderArchive() {
-  const grid = document.getElementById('days-grid');
-  grid.innerHTML = '';
+  const currentWeekGrid = document.getElementById('current-week-grid');
+  const fullDaysGrid = document.getElementById('full-days-grid');
+  currentWeekGrid.innerHTML = '';
+  fullDaysGrid.innerHTML = '';
 
-  const totalDays = Math.max(currentOfficialDay, gameData.retos.length);
-
-  for (let i = 1; i <= totalDays; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'day-btn';
-    
-    const dataExists = gameData.retos.find(r => r.dia === i);
-    
-    if (i > currentOfficialDay) {
-      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">PRÓX.</span>`;
-      btn.disabled = true;
-    } else if (!dataExists) {
-      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">EN OBRAS</span>`;
-      btn.disabled = true;
-    } else {
-      const historyRecord = savedState.history[i];
-      if (historyRecord) {
-        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">VER RESUMEN</span>`;
-        btn.classList.add(historyRecord.status);
-        btn.onclick = () => showReview(i);
-      } else if (savedState.activeSession && savedState.activeSession.dia === i) {
-        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">SEGUIR</span>`;
-        btn.classList.add('resume');
-        btn.onclick = () => startGame(i, true);
-      } else {
-        btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">JUGAR</span>`;
-        btn.onclick = () => startGame(i, false);
-      }
-    }
-    grid.appendChild(btn);
+  // 1. Grid del Reto Actual: Día de hoy y los 7 siguientes (8 botones en total)
+  for (let i = currentOfficialDay; i < currentOfficialDay + 8; i++) {
+    currentWeekGrid.appendChild(createDayButton(i));
   }
+
+  // 2. Grid del Archivo: Día 1 hasta el Día de hoy
+  for (let i = 1; i <= currentOfficialDay; i++) {
+    fullDaysGrid.appendChild(createDayButton(i));
+  }
+}
+
+// Función auxiliar para fabricar cada botón según su estado
+function createDayButton(i) {
+  const btn = document.createElement('button');
+  btn.className = 'day-btn';
+  
+  const dataExists = gameData.retos.find(r => r.dia === i);
+  
+  if (i > currentOfficialDay) {
+    if (dataExists) {
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">PRÓX.</span>`;
+    } else {
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">EN OBRAS</span>`;
+    }
+    btn.disabled = true;
+  } else if (!dataExists) {
+    btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">EN OBRAS</span>`;
+    btn.disabled = true;
+  } else {
+    const historyRecord = savedState.history[i];
+    if (historyRecord) {
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">VER RESUMEN</span>`;
+      btn.classList.add(historyRecord.status);
+      btn.onclick = () => showReview(i);
+    } else if (savedState.activeSession && savedState.activeSession.dia === i) {
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">SEGUIR</span>`;
+      btn.classList.add('resume');
+      btn.onclick = () => startGame(i, true);
+    } else {
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">JUGAR</span>`;
+      btn.onclick = () => startGame(i, false);
+    }
+  }
+  return btn;
 }
 
 // 3. Revisión de Partida
@@ -327,14 +352,14 @@ minSlider.addEventListener('input', () => { minSlider.style.zIndex = 10; maxSlid
 maxSlider.addEventListener('input', () => { maxSlider.style.zIndex = 10; minSlider.style.zIndex = 5; updateSliders(); });
 
 function updateSliders() {
-  let minVal = parseInt(minSlider.value);
-  let maxVal = parseInt(maxSlider.value);
+  let minVal = parseInt(minSlider.value, 10);
+  let maxVal = parseInt(maxSlider.value, 10);
 
   if (minVal > maxVal) {
     if (document.activeElement === minSlider) minSlider.value = maxVal;
     else maxSlider.value = minVal;
-    minVal = parseInt(minSlider.value);
-    maxVal = parseInt(maxSlider.value);
+    minVal = parseInt(minSlider.value, 10);
+    maxVal = parseInt(maxSlider.value, 10);
   }
 
   const q = playingDay.preguntas[currentIdx];
@@ -362,8 +387,8 @@ function updateSliders() {
 function handleAction() {
   if (!isAnswered) {
     const q = playingDay.preguntas[currentIdx];
-    const userMin = parseInt(minSlider.value);
-    const userMax = parseInt(maxSlider.value);
+    const userMin = parseInt(minSlider.value, 10);
+    const userMax = parseInt(maxSlider.value, 10);
     const range = q.max - q.min;
     const costPercent = Math.round(((userMax - userMin) / range) * 100);
     const targetPercent = ((q.respuesta - q.min) / range) * 100;
@@ -377,6 +402,7 @@ function handleAction() {
     totalDamage += costPercent;
     health -= costPercent;
     
+    // Aquí validamos matemáticamente de forma segura (>= y <= incluyen los extremos 100%)
     const isCorrect = q.respuesta >= userMin && q.respuesta <= userMax;
 
     savedState.activeSession.answers.push({
@@ -394,7 +420,6 @@ function handleAction() {
       lives--;
       pendingHealthReset = true;
       
-      // DISPARAR VIBRACIÓN HÁPTICA Y SCREEN SHAKE
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       cardBox.classList.add('screen-shake');
       setTimeout(() => cardBox.classList.remove('screen-shake'), 400);

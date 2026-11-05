@@ -25,23 +25,39 @@
       <span class="signature">by 87conde</span>
     </div>
 
-    <!-- CONTADOR DE TIEMPO PARA EL PRÓXIMO DÍA -->
+    <!-- CONTADOR DE TIEMPO -->
     <div class="pixel-box countdown-box">
       <span class="countdown-label">⏳ PRÓXIMO RETO EN:</span>
       <span id="countdown-timer" class="mono">--:--:--</span>
     </div>
 
+    <!-- CÓMO JUGAR EN ACORDEÓN DESPLEGABLE -->
+    <details class="pixel-box how-to-accordion">
+      <summary>
+        <h3>CÓMO JUGAR <span class="arrow">▼</span></h3>
+      </summary>
+      <div class="accordion-content">
+        <p>🎯 Ajusta los tiradores para que la respuesta correcta quede dentro de tu horquilla.</p>
+        <p>💔 Cuanto más abras el rango para asegurar, más <strong>SALUD</strong> gastas en esa ronda.</p>
+        <p>💀 Si la respuesta cae fuera de tu rango o tu salud llega a 0, pierdes <strong>1 VIDA</strong>.</p>
+        <p>🏆 ¡Sobrevive a las 5 preguntas del día!</p>
+      </div>
+    </details>
+
+    <!-- RETO ACTUAL (8 DÍAS EN PANTALLA) -->
     <div class="pixel-box">
-      <h2>ARCHIVO DE NIVELES</h2>
-      <div id="days-grid" class="days-grid"></div>
+      <div class="archive-header">
+        <h2>RETO ACTUAL</h2>
+        <button id="btn-show-archive" class="btn-pixel small-btn" style="background: var(--track); color: #fff;">VER ARCHIVO</button>
+      </div>
+      <div id="current-week-grid" class="days-grid"></div>
     </div>
 
-    <div class="pixel-box how-to-play">
-      <h3>CÓMO JUGAR</h3>
-      <p>🎯 Ajusta los tiradores para que la respuesta correcta quede dentro de tu horquilla.</p>
-      <p>💔 Cuanto más abras el rango para asegurar, más <strong>SALUD</strong> gastas en esa ronda.</p>
-      <p>💀 Si la respuesta cae fuera de tu rango o tu salud llega a 0, pierdes <strong>1 VIDA</strong>.</p>
-      <p>🏆 ¡Sobrevive a las 5 preguntas del día!</p>
+    <!-- ARCHIVO COMPLETO OCULTO (DÍA 1 HASTA HOY) -->
+    <div id="full-archive-section" class="pixel-box hidden-archive">
+      <h2>ARCHIVO DE NIVELES</h2>
+      <div id="full-days-grid" class="days-grid"></div>
+      <button id="btn-close-archive" class="btn-pixel" style="margin-top: 15px; background: var(--danger); color: #fff;">▲ CERRAR ARCHIVO</button>
     </div>
   </div>
 
@@ -123,7 +139,6 @@
         <div id="target-needle" class="target-needle">
           <div class="needle-head"></div>
         </div>
-        <!-- SLIDERS -->
         <input type="range" id="min-slider" value="0">
         <input type="range" id="max-slider" value="100">
       </div>
@@ -138,9 +153,7 @@
     </div>
   </div>
 
-  <!-- NOTIFICACIÓN TOAST -->
   <div id="toast" class="toast">¡COPIADO AL PORTAPAPELES!</div>
-
   <script src="script.js"></script>
 </body>
 </html>
