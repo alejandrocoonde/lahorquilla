@@ -48,16 +48,13 @@ fetch('datos.json')
 // Lógica de Racha
 function calculateStreak() {
   currentStreak = 0;
-  // Empezamos a contar hacia atrás desde el día oficial actual
   for (let i = currentOfficialDay; i >= 1; i--) {
     const record = savedState.history[i];
     if (record && record.status === 'won') {
       currentStreak++;
     } else if (i === currentOfficialDay && !record) {
-      // Si el día de hoy no está jugado aún, no rompe la racha de ayer.
-      continue;
+      continue; // No romper la racha si hoy aún no ha jugado
     } else {
-      // Si hay un hueco o una derrota, se corta la racha
       break;
     }
   }
@@ -78,21 +75,30 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
 });
 
-// 2. Archivo
+// 2. Archivo (ARREGLADO: Ahora pinta todos los días)
 function renderArchive() {
   const grid = document.getElementById('days-grid');
   grid.innerHTML = '';
 
-  for (let i = 1; i <= currentOfficialDay; i++) {
+  // Cogemos el total de días disponibles en el JSON
+  const totalDays = Math.max(currentOfficialDay, gameData.retos.length);
+
+  for (let i = 1; i <= totalDays; i++) {
     const btn = document.createElement('button');
     btn.className = 'day-btn';
     
     const dataExists = gameData.retos.find(r => r.dia === i);
     
-    if (!dataExists) {
+    if (i > currentOfficialDay) {
+      // Días futuros bloqueados
       btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">PRÓX.</span>`;
       btn.disabled = true;
+    } else if (!dataExists) {
+      // Días que pasaron pero no están en el JSON (por si acaso)
+      btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">EN OBRAS</span>`;
+      btn.disabled = true;
     } else {
+      // Días jugables (Hoy o en el pasado)
       const historyRecord = savedState.history[i];
       if (historyRecord) {
         btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">VER RESUMEN</span>`;
@@ -319,3 +325,28 @@ function handleAction() {
 }
 
 function endGame(status) {
+  if (status === 'won') {
+    feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO RECIBIDO: ${totalDamage}%`;
+    feedbackTxt.classList.replace('error', 'success');
+  }
+
+  savedState.history[playingDay.dia] = { 
+    status: status, 
+    totalDamage: totalDamage,
+    answers: savedState.activeSession.answers 
+  };
+  
+  savedState.activeSession = null;
+  saveStateToLocal();
+  calculateStreak();
+  
+  setTimeout(() => {
+    gameView.classList.add('hidden');
+    archiveView.classList.add('show');
+    renderArchive();
+  }, 4000); 
+}
+
+function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
+
+actionBtn.addEventListener('click', handleAction);
