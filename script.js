@@ -497,3 +497,11 @@ function endGame(status) {
 function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
 
 actionBtn.addEventListener('click', handleAction);
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registrado correctamente.'))
+      .catch((err) => console.log('Fallo al registrar el Service Worker:', err));
+  });
+}
