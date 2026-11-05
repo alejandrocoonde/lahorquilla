@@ -3,18 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LA HORQUILLA - JUEGO DIARIO</title>
-  <!-- Fuente Pixel Art Retro -->
+  <title>LA HORQUILLA - by 87conde</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   
-  <!-- MENÚ DE ARCHIVO -->
-  <div id="archive-view" class="archive-container show pixel-box">
-    <h2>ARCHIVO DE NIVELES</h2>
-    <p>DÍAS DESBLOQUEADOS. ¡JUEGA LOS ANTERIORES!</p>
-    <div id="days-grid" class="days-grid"></div>
+  <!-- MENÚ DE INICIO / ARCHIVO -->
+  <div id="archive-view" class="archive-container show">
+    
+    <div class="top-bar-menu">
+      <div class="streak-badge">
+        <span class="streak-icon">🔥</span>
+        <span id="menu-streak">0</span>
+      </div>
+    </div>
+
+    <div class="title-container">
+      <h1 class="main-title">LA HORQUILLA</h1>
+      <span class="signature">by 87conde</span>
+    </div>
+
+    <div class="pixel-box">
+      <h2>ARCHIVO DE NIVELES</h2>
+      <div id="days-grid" class="days-grid"></div>
+    </div>
+
+    <div class="pixel-box how-to-play">
+      <h3>CÓMO JUGAR</h3>
+      <p>🎯 Ajusta los tiradores para que la respuesta correcta quede dentro de tu horquilla.</p>
+      <p>💔 Cuanto más abras el rango para asegurar, más <strong>SALUD</strong> gastas en esa ronda.</p>
+      <p>💀 Si la respuesta cae fuera de tu rango o tu salud llega a 0, pierdes <strong>1 VIDA</strong>.</p>
+      <p>🏆 ¡Sobrevive a las 5 preguntas del día!</p>
+    </div>
+  </div>
+
+  <!-- VISTA DE REVISIÓN DE PARTIDA -->
+  <div id="review-view" class="archive-container hidden">
+    <div class="pixel-box">
+      <h2 id="review-title">REVISIÓN - DÍA X</h2>
+      <p style="margin-top:5px; color: var(--text-muted);">Tus decisiones en esta partida:</p>
+      
+      <div id="review-content" class="review-content"></div>
+      
+      <button id="btn-back-archive" class="btn-pixel" style="margin-top: 20px;">VOLVER AL MENÚ</button>
+    </div>
   </div>
 
   <!-- JUEGO PRINCIPAL -->
@@ -22,7 +55,13 @@
     <header class="pixel-box">
       <div class="brand">
         <h1>LA HORQUILLA <span id="day-badge" class="badge">DÍA -</span></h1>
-        <button id="btn-archive" class="btn-pixel small-btn">ARCHIVO</button>
+        <div class="brand-right">
+          <div class="streak-badge game-streak">
+            <span class="streak-icon">🔥</span>
+            <span id="game-streak-text">0</span>
+          </div>
+          <button id="btn-archive" class="btn-pixel small-btn">SALIR</button>
+        </div>
       </div>
       <div class="stats-row">
         <div class="status-group">
@@ -42,7 +81,7 @@
         <span id="question-number" class="q-number">PREGUNTA - / -</span>
         <span id="cost-val" class="cost-badge">COSTE: 0%</span>
       </div>
-      <h2 id="question-text" class="question-title">CARGANDO MODO ARCADE...</h2>
+      <h2 id="question-text" class="question-title">CARGANDO...</h2>
       
       <div class="range-picker" id="range-container">
         <div class="slider-track"></div>

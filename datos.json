@@ -4,141 +4,311 @@
     {
       "dia": 1,
       "preguntas": [
-        { "texto": "¿En qué año se hundió el Titanic?", "min": 1500, "max": 2024, "respuesta": 1912, "unidad": "" },
-        { "texto": "¿Cuántos huesos tiene el cuerpo humano adulto?", "min": 0, "max": 1000, "respuesta": 206, "unidad": "huesos" },
-        { "texto": "¿A qué temperatura (ºC) hierve el agua en la cima del Everest?", "min": -50, "max": 150, "respuesta": 71, "unidad": "ºC" },
-        { "texto": "¿En qué año se lanzó el primer satélite artificial (Sputnik 1)?", "min": 1800, "max": 2024, "respuesta": 1957, "unidad": "" },
-        { "texto": "¿Cuál es la altura oficial de la Torre Eiffel en metros?", "min": 0, "max": 1000, "respuesta": 330, "unidad": "m" }
+        { "texto": "¿En qué año se hundió el Titanic?", "min": 1850, "max": 1960, "respuesta": 1912, "unidad": "" },
+        { "texto": "¿Cuántos huesos tiene el cuerpo humano adulto?", "min": 100, "max": 350, "respuesta": 206, "unidad": "huesos" },
+        { "texto": "¿A qué temperatura (ºC) hierve el agua en la cima del Everest?", "min": 40, "max": 110, "respuesta": 71, "unidad": "ºC" },
+        { "texto": "¿En qué año se lanzó el primer satélite artificial (Sputnik 1)?", "min": 1900, "max": 1990, "respuesta": 1957, "unidad": "" },
+        { "texto": "¿Cuál es la altura oficial de la Torre Eiffel en metros?", "min": 150, "max": 600, "respuesta": 330, "unidad": "m" }
       ]
     },
     {
       "dia": 2,
       "preguntas": [
-        { "texto": "¿En qué año llegó el ser humano a la Luna?", "min": 1700, "max": 2024, "respuesta": 1969, "unidad": "" },
-        { "texto": "¿Cuántos elementos tiene la tabla periódica oficial?", "min": 10, "max": 300, "respuesta": 118, "unidad": "elem." },
-        { "texto": "¿A qué velocidad viaja el sonido en el aire (m/s)?", "min": 0, "max": 1000, "respuesta": 343, "unidad": "m/s" },
-        { "texto": "¿Cuántas casillas tiene un tablero de ajedrez?", "min": 10, "max": 200, "respuesta": 64, "unidad": "casillas" },
-        { "texto": "¿Cuántos días tiene un año bisiesto?", "min": 200, "max": 500, "respuesta": 366, "unidad": "días" }
+        { "texto": "¿En qué año llegó el ser humano a la Luna?", "min": 1920, "max": 2000, "respuesta": 1969, "unidad": "" },
+        { "texto": "¿Cuántos elementos tiene la tabla periódica oficial?", "min": 70, "max": 180, "respuesta": 118, "unidad": "elem." },
+        { "texto": "¿A qué velocidad viaja el sonido en el aire (m/s)?", "min": 100, "max": 800, "respuesta": 343, "unidad": "m/s" },
+        { "texto": "¿Cuántas casillas tiene un tablero de ajedrez?", "min": 30, "max": 120, "respuesta": 64, "unidad": "casillas" },
+        { "texto": "¿Cuántos días tiene un año bisiesto?", "min": 300, "max": 400, "respuesta": 366, "unidad": "días" }
       ]
     },
     {
       "dia": 3,
       "preguntas": [
-        { "texto": "¿En qué año cayó el Muro de Berlín?", "min": 1800, "max": 2024, "respuesta": 1989, "unidad": "" },
-        { "texto": "¿Cuántas teclas tiene un piano clásico?", "min": 10, "max": 200, "respuesta": 88, "unidad": "teclas" },
-        { "texto": "¿A qué temperatura se congela el agua en grados Fahrenheit?", "min": -100, "max": 200, "respuesta": 32, "unidad": "ºF" },
-        { "texto": "¿Cuántos estados tiene actualmente Estados Unidos?", "min": 10, "max": 150, "respuesta": 50, "unidad": "estados" },
-        { "texto": "¿Cuántos días dura el embarazo de un elefante africano?", "min": 100, "max": 1200, "respuesta": 640, "unidad": "días" }
+        { "texto": "¿En qué año cayó el Muro de Berlín?", "min": 1940, "max": 2010, "respuesta": 1989, "unidad": "" },
+        { "texto": "¿Cuántas teclas tiene un piano clásico?", "min": 40, "max": 140, "respuesta": 88, "unidad": "teclas" },
+        { "texto": "¿A qué temperatura se congela el agua en grados Fahrenheit?", "min": -20, "max": 100, "respuesta": 32, "unidad": "ºF" },
+        { "texto": "¿Cuántos estados tiene actualmente Estados Unidos?", "min": 25, "max": 80, "respuesta": 50, "unidad": "estados" },
+        { "texto": "¿Cuántos días dura el embarazo de un elefante africano?", "min": 200, "max": 900, "respuesta": 640, "unidad": "días" }
       ]
     },
     {
       "dia": 4,
       "preguntas": [
-        { "texto": "¿En qué año terminó la Segunda Guerra Mundial?", "min": 1700, "max": 2024, "respuesta": 1945, "unidad": "" },
-        { "texto": "¿Cuántos dientes tiene un humano adulto sano?", "min": 0, "max": 100, "respuesta": 32, "unidad": "dientes" },
-        { "texto": "¿Cuántos grados tiene un ángulo recto?", "min": 0, "max": 360, "respuesta": 90, "unidad": "º" },
-        { "texto": "¿En qué año comenzó la Revolución Francesa?", "min": 1000, "max": 2000, "respuesta": 1789, "unidad": "" },
-        { "texto": "¿Cuántos litros de sangre tiene un humano adulto promedio?", "min": 0, "max": 30, "respuesta": 5, "unidad": "L" }
+        { "texto": "¿En qué año terminó la Segunda Guerra Mundial?", "min": 1910, "max": 1980, "respuesta": 1945, "unidad": "" },
+        { "texto": "¿Cuántos dientes tiene un humano adulto sano?", "min": 16, "max": 48, "respuesta": 32, "unidad": "dientes" },
+        { "texto": "¿Cuántos grados tiene un ángulo recto?", "min": 30, "max": 180, "respuesta": 90, "unidad": "º" },
+        { "texto": "¿En qué año comenzó la Revolución Francesa?", "min": 1650, "max": 1900, "respuesta": 1789, "unidad": "" },
+        { "texto": "¿Cuántos litros de sangre tiene un humano adulto promedio?", "min": 1, "max": 15, "respuesta": 5, "unidad": "L" }
       ]
     },
     {
       "dia": 5,
       "preguntas": [
-        { "texto": "¿En qué año descubrió Cristóbal Colón América?", "min": 500, "max": 2000, "respuesta": 1492, "unidad": "" },
-        { "texto": "¿Cuántos países reconocidos hay en África?", "min": 5, "max": 150, "respuesta": 54, "unidad": "países" },
-        { "texto": "¿Cuántos planetas reconocidos hay en el Sistema Solar?", "min": 0, "max": 50, "respuesta": 8, "unidad": "planetas" },
-        { "texto": "¿Cuántos huesos forman el cráneo humano?", "min": 0, "max": 100, "respuesta": 22, "unidad": "huesos" },
-        { "texto": "¿A qué profundidad aproximada está la Fosa de las Marianas (metros)?", "min": 0, "max": 25000, "respuesta": 10984, "unidad": "m" }
+        { "texto": "¿En qué año descubrió Cristóbal Colón América?", "min": 1300, "max": 1700, "respuesta": 1492, "unidad": "" },
+        { "texto": "¿Cuántos países reconocidos hay en África?", "min": 20, "max": 90, "respuesta": 54, "unidad": "países" },
+        { "texto": "¿Cuántos planetas reconocidos hay en el Sistema Solar?", "min": 4, "max": 20, "respuesta": 8, "unidad": "planetas" },
+        { "texto": "¿Cuántos huesos forman el cráneo humano?", "min": 8, "max": 60, "respuesta": 22, "unidad": "huesos" },
+        { "texto": "¿A qué profundidad aproximada está la Fosa de las Marianas (metros)?", "min": 3000, "max": 18000, "respuesta": 10984, "unidad": "m" }
       ]
     },
     {
       "dia": 6,
       "preguntas": [
-        { "texto": "¿En qué año se inventó la imprenta de Gutenberg (aprox)?", "min": 500, "max": 2000, "respuesta": 1440, "unidad": "" },
-        { "texto": "¿Cuántas zonas horarias oficiales hay en el mundo?", "min": 1, "max": 100, "respuesta": 24, "unidad": "zonas" },
-        { "texto": "¿Cuántos minutos hay en un día completo?", "min": 0, "max": 3000, "respuesta": 1440, "unidad": "min" },
-        { "texto": "¿Cuántas estrellas tiene la bandera de China?", "min": 0, "max": 50, "respuesta": 5, "unidad": "estrellas" },
-        { "texto": "¿En qué año se lanzó el primer iPhone?", "min": 1950, "max": 2024, "respuesta": 2007, "unidad": "" }
+        { "texto": "¿En qué año se inventó la imprenta de Gutenberg (aprox)?", "min": 1200, "max": 1650, "respuesta": 1440, "unidad": "" },
+        { "texto": "¿Cuántas zonas horarias oficiales hay en el mundo?", "min": 10, "max": 60, "respuesta": 24, "unidad": "zonas" },
+        { "texto": "¿Cuántos minutos hay en un día completo?", "min": 500, "max": 2500, "respuesta": 1440, "unidad": "min" },
+        { "texto": "¿Cuántas estrellas tiene la bandera de China?", "min": 1, "max": 15, "respuesta": 5, "unidad": "estrellas" },
+        { "texto": "¿En qué año se lanzó el primer iPhone?", "min": 1990, "max": 2020, "respuesta": 2007, "unidad": "" }
       ]
     },
     {
       "dia": 7,
       "preguntas": [
-        { "texto": "¿En qué año se firmó la Declaración de Independencia de EE.UU.?", "min": 1000, "max": 2024, "respuesta": 1776, "unidad": "" },
-        { "texto": "¿A qué distancia está la Luna de la Tierra aproximadamente (km)?", "min": 0, "max": 1000000, "respuesta": 384400, "unidad": "km" },
-        { "texto": "¿Cuántos músculos diferentes usamos para sonreír?", "min": 0, "max": 150, "respuesta": 17, "unidad": "músculos" },
-        { "texto": "¿En qué año se fundó la ONU?", "min": 1700, "max": 2024, "respuesta": 1945, "unidad": "" },
-        { "texto": "¿Cuál es la velocidad máxima registrada de un guepardo (km/h)?", "min": 0, "max": 300, "respuesta": 120, "unidad": "km/h" }
+        { "texto": "¿En qué año se firmó la Declaración de Independencia de EE.UU.?", "min": 1650, "max": 1880, "respuesta": 1776, "unidad": "" },
+        { "texto": "¿A qué distancia está la Luna de la Tierra aproximadamente (km)?", "min": 100000, "max": 800000, "respuesta": 384400, "unidad": "km" },
+        { "texto": "¿Cuántos músculos diferentes usamos para sonreír?", "min": 5, "max": 50, "respuesta": 17, "unidad": "músculos" },
+        { "texto": "¿En qué año se fundó la ONU?", "min": 1900, "max": 1980, "respuesta": 1945, "unidad": "" },
+        { "texto": "¿Cuál es la velocidad máxima registrada de un guepardo (km/h)?", "min": 50, "max": 200, "respuesta": 120, "unidad": "km/h" }
       ]
     },
     {
       "dia": 8,
       "preguntas": [
-        { "texto": "¿Cuántos caracteres cabían como máximo en un tweet original?", "min": 0, "max": 500, "respuesta": 140, "unidad": "caract." },
-        { "texto": "¿En qué año comenzó la Primera Guerra Mundial?", "min": 1500, "max": 2024, "respuesta": 1914, "unidad": "" },
-        { "texto": "¿A qué temperatura en grados Celsius se sitúa el Cero Absoluto?", "min": -1000, "max": 0, "respuesta": -273, "unidad": "ºC" },
-        { "texto": "¿Cuántos huesos tiene un perro adulto?", "min": 0, "max": 1000, "respuesta": 321, "unidad": "huesos" },
-        { "texto": "¿En qué año se publicó la primera parte de Don Quijote de la Mancha?", "min": 1000, "max": 2000, "respuesta": 1605, "unidad": "" }
+        { "texto": "¿Cuántos caracteres cabían como máximo en un tweet original?", "min": 60, "max": 300, "respuesta": 140, "unidad": "caract." },
+        { "texto": "¿En qué año comenzó la Primera Guerra Mundial?", "min": 1870, "max": 1950, "respuesta": 1914, "unidad": "" },
+        { "texto": "¿A qué temperatura en grados Celsius se sitúa el Cero Absoluto?", "min": -500, "max": -100, "respuesta": -273, "unidad": "ºC" },
+        { "texto": "¿Cuántos huesos tiene un perro adulto?", "min": 150, "max": 500, "respuesta": 321, "unidad": "huesos" },
+        { "texto": "¿En qué año se publicó la primera parte de Don Quijote de la Mancha?", "min": 1450, "max": 1750, "respuesta": 1605, "unidad": "" }
       ]
     },
     {
       "dia": 9,
       "preguntas": [
-        { "texto": "¿Cuántos océanos están reconocidos oficialmente en la Tierra?", "min": 1, "max": 20, "respuesta": 5, "unidad": "océanos" },
-        { "texto": "¿Cuántos cromosomas tiene un ser humano sano?", "min": 0, "max": 200, "respuesta": 46, "unidad": "crom." },
-        { "texto": "¿En qué año cayó el Imperio Romano de Occidente?", "min": 0, "max": 2000, "respuesta": 476, "unidad": "" },
-        { "texto": "¿Cuántos kilómetros de distancia tiene un maratón oficial?", "min": 0, "max": 150, "respuesta": 42, "unidad": "km" },
-        { "texto": "¿Cuál es el nivel de pH del agua pura?", "min": 0, "max": 50, "respuesta": 7, "unidad": "pH" }
+        { "texto": "¿Cuántos océanos están reconocidos oficialmente en la Tierra?", "min": 2, "max": 12, "respuesta": 5, "unidad": "océanos" },
+        { "texto": "¿Cuántos cromosomas tiene un ser humano sano?", "min": 20, "max": 90, "respuesta": 46, "unidad": "crom." },
+        { "texto": "¿En qué año cayó el Imperio Romano de Occidente?", "min": 100, "max": 1000, "respuesta": 476, "unidad": "" },
+        { "texto": "¿Cuántos kilómetros de distancia tiene un maratón oficial?", "min": 20, "max": 80, "respuesta": 42, "unidad": "km" },
+        { "texto": "¿Cuál es el nivel de pH del agua pura?", "min": 1, "max": 14, "respuesta": 7, "unidad": "pH" }
       ]
     },
     {
       "dia": 10,
       "preguntas": [
-        { "texto": "¿En qué año patentó Alexander Graham Bell el teléfono?", "min": 1000, "max": 2024, "respuesta": 1876, "unidad": "" },
-        { "texto": "¿Cuántos cuadros pintó Vincent Van Gogh en vida aproximadamente?", "min": 0, "max": 5000, "respuesta": 900, "unidad": "cuadros" },
-        { "texto": "¿A cuántos metros de profundidad máxima puede llegar un submarino nuclear (aprox)?", "min": 0, "max": 5000, "respuesta": 730, "unidad": "m" },
-        { "texto": "¿Cuántos goles oficiales marcó Pelé en toda su carrera?", "min": 0, "max": 3000, "respuesta": 762, "unidad": "goles" },
-        { "texto": "¿En qué año realizaron los hermanos Wright su primer vuelo con motor?", "min": 1500, "max": 2024, "respuesta": 1903, "unidad": "" }
+        { "texto": "¿En qué año patentó Alexander Graham Bell el teléfono?", "min": 1800, "max": 1930, "respuesta": 1876, "unidad": "" },
+        { "texto": "¿Cuántos cuadros pintó Vincent Van Gogh en vida aproximadamente?", "min": 200, "max": 2500, "respuesta": 900, "unidad": "cuadros" },
+        { "texto": "¿A cuántos metros de profundidad máxima puede llegar un submarino nuclear (aprox)?", "min": 200, "max": 2000, "respuesta": 730, "unidad": "m" },
+        { "texto": "¿Cuántos goles oficiales marcó Pelé en toda su carrera?", "min": 300, "max": 1500, "respuesta": 762, "unidad": "goles" },
+        { "texto": "¿En qué año realizaron los hermanos Wright su primer vuelo con motor?", "min": 1850, "max": 1940, "respuesta": 1903, "unidad": "" }
       ]
     },
     {
       "dia": 11,
       "preguntas": [
-        { "texto": "¿En qué año se disolvió oficialmente la Unión Soviética (URSS)?", "min": 1800, "max": 2024, "respuesta": 1991, "unidad": "" },
-        { "texto": "¿Cuántos latidos diarios da el corazón humano en promedio?", "min": 0, "max": 500000, "respuesta": 115000, "unidad": "latidos" },
-        { "texto": "¿Cuál es la altura exacta del Monte Everest sobre el nivel del mar?", "min": 0, "max": 20000, "respuesta": 8848, "unidad": "m" },
-        { "texto": "¿Cuántos huesos tiene una sola mano humana (incluida la muñeca)?", "min": 0, "max": 100, "respuesta": 27, "unidad": "huesos" },
-        { "texto": "¿En qué año se estrenó la primera película de Star Wars (Episodio IV)?", "min": 1900, "max": 2024, "respuesta": 1977, "unidad": "" }
+        { "texto": "¿En qué año se disolvió oficialmente la Unión Soviética (URSS)?", "min": 1960, "max": 2010, "respuesta": 1991, "unidad": "" },
+        { "texto": "¿Cuántos latidos diarios da el corazón humano en promedio?", "min": 30000, "max": 250000, "respuesta": 115000, "unidad": "latidos" },
+        { "texto": "¿Cuál es la altura exacta del Monte Everest sobre el nivel del mar?", "min": 5000, "max": 13000, "respuesta": 8848, "unidad": "m" },
+        { "texto": "¿Cuántos huesos tiene una sola mano humana (incluida la muñeca)?", "min": 10, "max": 60, "respuesta": 27, "unidad": "huesos" },
+        { "texto": "¿En qué año se estrenó la primera película de Star Wars (Episodio IV)?", "min": 1950, "max": 1995, "respuesta": 1977, "unidad": "" }
       ]
     },
     {
       "dia": 12,
       "preguntas": [
-        { "texto": "¿A qué velocidad viaja la luz en el vacío (km/s)?", "min": 0, "max": 1000000, "respuesta": 299792, "unidad": "km/s" },
-        { "texto": "¿Cuántos años duró realmente la 'Guerra de los Cien Años'?", "min": 0, "max": 500, "respuesta": 116, "unidad": "años" },
-        { "texto": "¿En qué año nació el compositor Wolfgang Amadeus Mozart?", "min": 1000, "max": 2000, "respuesta": 1756, "unidad": "" },
-        { "texto": "¿Cuántos países forman parte de la Unión Europea (en 2024)?", "min": 0, "max": 100, "respuesta": 27, "unidad": "países" },
-        { "texto": "¿Cuántos días terrestres tarda Marte en completar una órbita al Sol?", "min": 0, "max": 3000, "respuesta": 687, "unidad": "días" }
+        { "texto": "¿A qué velocidad viaja la luz en el vacío (km/s)?", "min": 100000, "max": 600000, "respuesta": 299792, "unidad": "km/s" },
+        { "texto": "¿Cuántos años duró realmente la 'Guerra de los Cien Años'?", "min": 50, "max": 200, "respuesta": 116, "unidad": "años" },
+        { "texto": "¿En qué año nació el compositor Wolfgang Amadeus Mozart?", "min": 1600, "max": 1850, "respuesta": 1756, "unidad": "" },
+        { "texto": "¿Cuántos países forman parte de la Unión Europea (en 2024)?", "min": 10, "max": 50, "respuesta": 27, "unidad": "países" },
+        { "texto": "¿Cuántos días terrestres tarda Marte en completar una órbita al Sol?", "min": 300, "max": 1200, "respuesta": 687, "unidad": "días" }
       ]
     },
     {
       "dia": 13,
       "preguntas": [
-        { "texto": "¿En qué año falleció el escritor William Shakespeare?", "min": 500, "max": 2000, "respuesta": 1616, "unidad": "" },
-        { "texto": "¿Cuántas cuerdas tiene un arpa clásica de concierto?", "min": 0, "max": 200, "respuesta": 47, "unidad": "cuerdas" },
-        { "texto": "¿Cuántos grados suman siempre los ángulos interiores de un triángulo?", "min": 0, "max": 500, "respuesta": 180, "unidad": "º" },
-        { "texto": "¿En qué año comenzó la Guerra Civil Española?", "min": 1500, "max": 2024, "respuesta": 1936, "unidad": "" },
-        { "texto": "¿Cuál es la longitud aproximada del río Nilo (km)?", "min": 0, "max": 15000, "respuesta": 6650, "unidad": "km" }
+        { "texto": "¿En qué año falleció el escritor William Shakespeare?", "min": 1500, "max": 1750, "respuesta": 1616, "unidad": "" },
+        { "texto": "¿Cuántas cuerdas tiene un arpa clásica de concierto?", "min": 20, "max": 80, "respuesta": 47, "unidad": "cuerdas" },
+        { "texto": "¿Cuántos grados suman siempre los ángulos interiores de un triángulo?", "min": 60, "max": 360, "respuesta": 180, "unidad": "º" },
+        { "texto": "¿En qué año comenzó la Guerra Civil Española?", "min": 1890, "max": 1970, "respuesta": 1936, "unidad": "" },
+        { "texto": "¿Cuál es la longitud aproximada del río Nilo (km)?", "min": 3000, "max": 12000, "respuesta": 6650, "unidad": "km" }
       ]
     },
     {
       "dia": 14,
       "preguntas": [
-        { "texto": "¿En qué año lanzó IBM su primer ordenador personal (IBM PC)?", "min": 1800, "max": 2024, "respuesta": 1981, "unidad": "" },
-        { "texto": "¿Cuántas costillas tiene en total un ser humano adulto?", "min": 0, "max": 100, "respuesta": 24, "unidad": "costillas" },
-        { "texto": "¿Cuántos libros contiene la Biblia católica oficial?", "min": 0, "max": 300, "respuesta": 73, "unidad": "libros" },
-        { "texto": "¿En qué año descubrió Alexander Fleming la penicilina?", "min": 1500, "max": 2024, "respuesta": 1928, "unidad": "" },
-        { "texto": "¿Cuál es el récord mundial de Usain Bolt en 100m lisos (en centésimas de segundo, ej. 9.58s = 958)?", "min": 500, "max": 2000, "respuesta": 958, "unidad": "cs" }
+        { "texto": "¿En qué año lanzó IBM su primer ordenador personal (IBM PC)?", "min": 1960, "max": 2000, "respuesta": 1981, "unidad": "" },
+        { "texto": "¿Cuántas costillas tiene en total un ser humano adulto?", "min": 10, "max": 40, "respuesta": 24, "unidad": "costillas" },
+        { "texto": "¿Cuántos libros contiene la Biblia católica oficial?", "min": 30, "max": 130, "respuesta": 73, "unidad": "libros" },
+        { "texto": "¿En qué año descubrió Alexander Fleming la penicilina?", "min": 1880, "max": 1960, "respuesta": 1928, "unidad": "" },
+        { "texto": "¿Cuál es el récord mundial de Usain Bolt en 100m lisos (en centésimas de segundo, ej. 9.58s = 958)?", "min": 800, "max": 1100, "respuesta": 958, "unidad": "cs" }
+      ]
+    },
+    {
+      "dia": 15,
+      "preguntas": [
+        { "texto": "¿En qué año se fundó la empresa Google?", "min": 1985, "max": 2010, "respuesta": 1998, "unidad": "" },
+        { "texto": "¿Cuántos husos horarios atraviesa Rusia en total?", "min": 3, "max": 18, "respuesta": 11, "unidad": "husos" },
+        { "texto": "¿Cuántos mililitros hay en una lata de refresco estándar en Europa?", "min": 150, "max": 500, "respuesta": 330, "unidad": "ml" },
+        { "texto": "¿En qué año comenzó la Revolución Industrial en Gran Bretaña?", "min": 1600, "max": 1900, "respuesta": 1760, "unidad": "" },
+        { "texto": "¿Cuántos músculos componen aproximadamente el cuerpo humano?", "min": 200, "max": 1000, "respuesta": 639, "unidad": "músculos" }
+      ]
+    },
+    {
+      "dia": 16,
+      "preguntas": [
+        { "texto": "¿En qué año se inauguró el Canal de Panamá?", "min": 1880, "max": 1950, "respuesta": 1914, "unidad": "" },
+        { "texto": "¿Cuántas calorías (aprox) quema un humano adulto corriendo 1 hora a ritmo medio?", "min": 200, "max": 1200, "respuesta": 600, "unidad": "kcal" },
+        { "texto": "¿A cuántos grados Kelvin hierve el agua?", "min": 200, "max": 500, "respuesta": 373, "unidad": "K" },
+        { "texto": "¿Cuántos anillos tiene la bandera olímpica?", "min": 2, "max": 10, "respuesta": 5, "unidad": "anillos" },
+        { "texto": "¿En qué año se coronó a Isabel II como Reina de Inglaterra?", "min": 1930, "max": 1980, "respuesta": 1953, "unidad": "" }
+      ]
+    },
+    {
+      "dia": 17,
+      "preguntas": [
+        { "texto": "¿Cuántos huesos componen el cuello de una jirafa?", "min": 2, "max": 30, "respuesta": 7, "unidad": "huesos" },
+        { "texto": "¿En qué año se lanzó al espacio el telescopio Hubble?", "min": 1970, "max": 2010, "respuesta": 1990, "unidad": "" },
+        { "texto": "¿A qué velocidad orbita la Tierra alrededor del Sol (km/s)?", "min": 10, "max": 100, "respuesta": 30, "unidad": "km/s" },
+        { "texto": "¿Cuántas películas oficiales forman la saga cinematográfica principal de Harry Potter?", "min": 3, "max": 15, "respuesta": 8, "unidad": "pelis" },
+        { "texto": "¿En qué año se hundió el Imperio Azteca a manos de Hernán Cortés?", "min": 1400, "max": 1700, "respuesta": 1521, "unidad": "" }
+      ]
+    },
+    {
+      "dia": 18,
+      "preguntas": [
+        { "texto": "¿En qué año se produjo el accidente nuclear de Chernóbil?", "min": 1960, "max": 2000, "respuesta": 1986, "unidad": "" },
+        { "texto": "¿Cuántos kilómetros (aprox) mide el diámetro de la Tierra?", "min": 5000, "max": 25000, "respuesta": 12742, "unidad": "km" },
+        { "texto": "¿Cuántos premios Oscar ganó la película 'Titanic'?", "min": 3, "max": 20, "respuesta": 11, "unidad": "Oscars" },
+        { "texto": "¿Cuántos años vivió el físico Albert Einstein?", "min": 50, "max": 100, "respuesta": 76, "unidad": "años" },
+        { "texto": "¿En qué año finalizó la construcción de la Gran Muralla China (Dinastía Ming)?", "min": 1200, "max": 1800, "respuesta": 1644, "unidad": "" }
+      ]
+    },
+    {
+      "dia": 19,
+      "preguntas": [
+        { "texto": "¿En qué año se fundó la ciudad de Roma (según la tradición)?", "min": -1000, "max": -300, "respuesta": -753, "unidad": "" },
+        { "texto": "¿Cuántos litros de agua cabe en una bañera estándar?", "min": 50, "max": 400, "respuesta": 150, "unidad": "L" },
+        { "texto": "¿A qué temperatura en grados Celsius se funde el oro puro?", "min": 500, "max": 2000, "respuesta": 1064, "unidad": "ºC" },
+        { "texto": "¿Cuántos cantones (estados) componen Suiza?", "min": 5, "max": 50, "respuesta": 26, "unidad": "cantones" },
+        { "texto": "¿En qué año ganó España su primer y único Mundial de Fútbol masculino?", "min": 1990, "max": 2022, "respuesta": 2010, "unidad": "" }
+      ]
+    },
+    {
+      "dia": 20,
+      "preguntas": [
+        { "texto": "¿En qué año se publicó la novela 'Cien años de soledad'?", "min": 1920, "max": 2000, "respuesta": 1967, "unidad": "" },
+        { "texto": "¿Cuántas vértebras tiene la columna vertebral de un ser humano adulto?", "min": 15, "max": 60, "respuesta": 33, "unidad": "vértebras" },
+        { "texto": "¿Cuál es la población aproximada de España en millones (datos de 2023)?", "min": 30, "max": 80, "respuesta": 48, "unidad": "millones" },
+        { "texto": "¿En qué año introdujo Nintendo la consola Game Boy en Japón?", "min": 1980, "max": 2000, "respuesta": 1989, "unidad": "" },
+        { "texto": "¿Cuántos días dura una fase lunar completa (mes sinódico)?", "min": 20, "max": 40, "respuesta": 29, "unidad": "días" }
+      ]
+    },
+    {
+      "dia": 21,
+      "preguntas": [
+        { "texto": "¿En qué año se declaró extinto el dodo?", "min": 1500, "max": 1900, "respuesta": 1681, "unidad": "" },
+        { "texto": "¿Cuántos litros de saliva produce una persona adulta al día?", "min": 0, "max": 5, "respuesta": 1, "unidad": "L" },
+        { "texto": "¿Cuál es la altitud de la ciudad de La Paz (Bolivia), la capital más alta del mundo?", "min": 2000, "max": 6000, "respuesta": 3640, "unidad": "m" },
+        { "texto": "¿En qué año pisó la Antártida la primera expedición confirmada?", "min": 1750, "max": 1950, "respuesta": 1820, "unidad": "" },
+        { "texto": "¿Cuántas casillas tiene un tablero clásico del Monopoly?", "min": 20, "max": 100, "respuesta": 40, "unidad": "casillas" }
+      ]
+    },
+    {
+      "dia": 22,
+      "preguntas": [
+        { "texto": "¿En qué año se inauguró la Torre de Pisa (comienzo de su construcción)?", "min": 1000, "max": 1600, "respuesta": 1173, "unidad": "" },
+        { "texto": "¿Cuántas patas tiene un cienpiés en promedio (la especie común Lithobius forficatus)?", "min": 10, "max": 150, "respuesta": 30, "unidad": "patas" },
+        { "texto": "¿A qué velocidad máxima llega un tren bala japonés (Shinkansen) en servicio comercial?", "min": 150, "max": 500, "respuesta": 320, "unidad": "km/h" },
+        { "texto": "¿En qué año se lanzó el primer videojuego de Super Mario Bros?", "min": 1975, "max": 1995, "respuesta": 1985, "unidad": "" },
+        { "texto": "¿Cuántos versos tiene un soneto clásico?", "min": 8, "max": 24, "respuesta": 14, "unidad": "versos" }
+      ]
+    },
+    {
+      "dia": 23,
+      "preguntas": [
+        { "texto": "¿En qué año se completó el rascacielos Burj Khalifa (el más alto del mundo)?", "min": 1995, "max": 2020, "respuesta": 2010, "unidad": "" },
+        { "texto": "¿Cuántas cartas tiene una baraja española estándar (sin comodines)?", "min": 30, "max": 60, "respuesta": 40, "unidad": "cartas" },
+        { "texto": "¿Cuántos gramos de azúcar tiene de media una lata de Coca-Cola (330ml)?", "min": 10, "max": 80, "respuesta": 35, "unidad": "g" },
+        { "texto": "¿En qué año se redactó la Constitución actual de España?", "min": 1960, "max": 1990, "respuesta": 1978, "unidad": "" },
+        { "texto": "¿Cuántos satélites naturales (lunas) tiene el planeta Júpiter descubiertos hasta 2023?", "min": 20, "max": 120, "respuesta": 95, "unidad": "lunas" }
+      ]
+    },
+    {
+      "dia": 24,
+      "preguntas": [
+        { "texto": "¿En qué año tuvo lugar la Revolución Rusa?", "min": 1890, "max": 1940, "respuesta": 1917, "unidad": "" },
+        { "texto": "¿Cuántas calorías tiene un gramo de grasa pura?", "min": 2, "max": 15, "respuesta": 9, "unidad": "kcal" },
+        { "texto": "¿A cuántos hercios (Hz) funciona la red eléctrica en Europa?", "min": 30, "max": 100, "respuesta": 50, "unidad": "Hz" },
+        { "texto": "¿En qué año se creó la primera vacuna (contra la viruela)?", "min": 1650, "max": 1900, "respuesta": 1796, "unidad": "" },
+        { "texto": "¿Cuántas celdas tiene una cuadrícula estándar de Sudoku?", "min": 50, "max": 150, "respuesta": 81, "unidad": "celdas" }
+      ]
+    },
+    {
+      "dia": 25,
+      "preguntas": [
+        { "texto": "¿En qué año comenzó la construcción de la Sagrada Familia de Gaudí?", "min": 1800, "max": 1950, "respuesta": 1882, "unidad": "" },
+        { "texto": "¿Cuántos colores tiene el arcoíris tradicionalmente reconocido?", "min": 4, "max": 12, "respuesta": 7, "unidad": "colores" },
+        { "texto": "¿Cuántos mililitros de capacidad pulmonar total tiene un adulto promedio?", "min": 2000, "max": 10000, "respuesta": 6000, "unidad": "ml" },
+        { "texto": "¿En qué año se fundó la ciudad de Nueva Ámsterdam (hoy Nueva York)?", "min": 1500, "max": 1800, "respuesta": 1624, "unidad": "" },
+        { "texto": "¿Cuántos episodios tiene la serie animada Los Simpson (hasta el final de su temporada 35)?", "min": 500, "max": 1000, "respuesta": 768, "unidad": "ep." }
+      ]
+    },
+    {
+      "dia": 26,
+      "preguntas": [
+        { "texto": "¿En qué año se descubrió la estructura de doble hélice del ADN?", "min": 1900, "max": 1990, "respuesta": 1953, "unidad": "" },
+        { "texto": "¿Cuántas estrellas tiene la bandera de Estados Unidos hoy en día?", "min": 30, "max": 70, "respuesta": 50, "unidad": "estrellas" },
+        { "texto": "¿Cuántos kilómetros separan aproximadamente Madrid de Barcelona en línea recta?", "min": 200, "max": 900, "respuesta": 505, "unidad": "km" },
+        { "texto": "¿En qué año se transmitió el primer partido de fútbol por televisión?", "min": 1910, "max": 1970, "respuesta": 1937, "unidad": "" },
+        { "texto": "¿Cuántas letras tiene el alfabeto cirílico ruso moderno?", "min": 20, "max": 50, "respuesta": 33, "unidad": "letras" }
+      ]
+    },
+    {
+      "dia": 27,
+      "preguntas": [
+        { "texto": "¿En qué año se firmó el Tratado de Tordesillas (que dividió el nuevo mundo)?", "min": 1300, "max": 1700, "respuesta": 1494, "unidad": "" },
+        { "texto": "¿Cuántos bytes conforman un kilobyte (KB) en el sistema binario puro?", "min": 500, "max": 1500, "respuesta": 1024, "unidad": "bytes" },
+        { "texto": "¿Cuál es la temperatura corporal normal de un perro (en grados Celsius)?", "min": 34, "max": 45, "respuesta": 38, "unidad": "ºC" },
+        { "texto": "¿En qué año se emitió el primer episodio de Friends?", "min": 1985, "max": 2005, "respuesta": 1994, "unidad": "" },
+        { "texto": "¿Cuántas cuerdas vocales verdaderas tiene un ser humano?", "min": 1, "max": 8, "respuesta": 2, "unidad": "cuerdas" }
+      ]
+    },
+    {
+      "dia": 28,
+      "preguntas": [
+        { "texto": "¿En qué año se fundó la plataforma de vídeos YouTube?", "min": 1995, "max": 2015, "respuesta": 2005, "unidad": "" },
+        { "texto": "¿Cuántas casillas tiene un cubo de Rubik clásico de 3x3x3 en su superficie?", "min": 30, "max": 100, "respuesta": 54, "unidad": "casillas" },
+        { "texto": "¿Cuántos días vive aproximadamente una abeja obrera en verano?", "min": 5, "max": 120, "respuesta": 45, "unidad": "días" },
+        { "texto": "¿En qué año coronaron emperador a Carlomagno?", "min": 500, "max": 1100, "respuesta": 800, "unidad": "" },
+        { "texto": "¿Cuántos millones de hispanohablantes nativos hay en el mundo (aprox)?", "min": 200, "max": 800, "respuesta": 500, "unidad": "millones" }
+      ]
+    },
+    {
+      "dia": 29,
+      "preguntas": [
+        { "texto": "¿En qué año se celebró el primer festival de música de Woodstock?", "min": 1950, "max": 1990, "respuesta": 1969, "unidad": "" },
+        { "texto": "¿Cuántos dientes tiene un tiburón blanco adulto (en varias filas a la vez)?", "min": 50, "max": 1000, "respuesta": 300, "unidad": "dientes" },
+        { "texto": "¿Cuál es la velocidad de escape de la Tierra (km/s) para salir de su gravedad?", "min": 5, "max": 30, "respuesta": 11, "unidad": "km/s" },
+        { "texto": "¿En qué año llegó al poder Adolf Hitler en Alemania?", "min": 1915, "max": 1945, "respuesta": 1933, "unidad": "" },
+        { "texto": "¿Cuántas piezas de dominó tiene el juego clásico (doble seis)?", "min": 15, "max": 60, "respuesta": 28, "unidad": "piezas" }
+      ]
+    },
+    {
+      "dia": 30,
+      "preguntas": [
+        { "texto": "¿En qué año se lanzó al mercado el primer sistema operativo Windows (1.0)?", "min": 1970, "max": 2000, "respuesta": 1985, "unidad": "" },
+        { "texto": "¿Cuántas calorías (aprox) hay en una manzana mediana?", "min": 20, "max": 200, "respuesta": 95, "unidad": "kcal" },
+        { "texto": "¿A cuántos grados Celsius se evapora el nitrógeno líquido?", "min": -250, "max": -50, "respuesta": -196, "unidad": "ºC" },
+        { "texto": "¿En qué año tuvo lugar la batalla de Waterloo?", "min": 1700, "max": 1900, "respuesta": 1815, "unidad": "" },
+        { "texto": "¿Cuántas horas duerme un gato adulto al día de media?", "min": 5, "max": 20, "respuesta": 14, "unidad": "horas" }
+      ]
+    },
+    {
+      "dia": 31,
+      "preguntas": [
+        { "texto": "¿En qué año pintó Leonardo da Vinci La Mona Lisa (inicio)?", "min": 1300, "max": 1700, "respuesta": 1503, "unidad": "" },
+        { "texto": "¿Cuántas teclas de función (F1, F2...) tiene un teclado de ordenador estándar?", "min": 8, "max": 20, "respuesta": 12, "unidad": "teclas" },
+        { "texto": "¿Cuántos kilogramos pesa el cerebro humano promedio?", "min": 0, "max": 5, "respuesta": 1, "unidad": "kg" },
+        { "texto": "¿En qué año se disolvió la mítica banda The Beatles?", "min": 1960, "max": 1990, "respuesta": 1970, "unidad": "" },
+        { "texto": "¿Cuántos centímetros cúbicos (cc) se donan típicamente en una extracción de sangre normal?", "min": 200, "max": 800, "respuesta": 450, "unidad": "cc" }
       ]
     }
   ]

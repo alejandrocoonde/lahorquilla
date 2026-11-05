@@ -1,10 +1,11 @@
 :root {
-  --bg: #2b2b45; /* Azul oscuro retro */
+  --bg: #2b2b45;
   --card: #1a1a2e;
-  --accent: #facc15; /* Amarillo arcade */
-  --danger: #ef4444; /* Rojo pixel */
-  --success: #22c55e; /* Verde pixel */
+  --accent: #facc15;
+  --danger: #ef4444;
+  --success: #22c55e;
   --text: #e2e8f0;
+  --text-muted: #94a3b8;
   --track: #475569;
   --border: #000000;
 }
@@ -14,27 +15,31 @@
 body { 
   background-color: var(--bg); 
   color: var(--text); 
-  font-family: 'VT323', monospace; /* Fuente retro */
+  font-family: 'VT323', monospace; 
   display: flex; justify-content: center; align-items: flex-start; 
   min-height: 100vh; padding: 20px; 
   text-transform: uppercase;
 }
 
-/* Contenedores Principales estilo 90s */
+/* Contenedores Principales */
 .game-container, .archive-container { width: 100%; max-width: 550px; margin-top: 2vh; }
 .archive-container { display: none; }
-.archive-container.show { display: flex; flex-direction: column; gap: 20px; }
+.archive-container.show { display: flex; flex-direction: column; gap: 25px; }
 .game-container { display: flex; flex-direction: column; gap: 20px; }
-.game-container.hidden { display: none !important; }
+.game-container.hidden, .archive-container.hidden { display: none !important; }
+
+/* Título y Firma Retro */
+.title-container { text-align: center; margin-bottom: 10px; position: relative; display: inline-block; align-self: center; }
+.main-title { font-size: 3.5rem; color: var(--accent); text-shadow: 4px 4px 0px #000; margin: 0; line-height: 1; letter-spacing: 2px; }
+.signature { position: absolute; right: -15px; bottom: -15px; font-size: 1.2rem; color: #fff; background: var(--danger); padding: 2px 8px; border: 2px solid #000; transform: rotate(-5deg); box-shadow: 2px 2px 0px #000; }
 
 /* Cajas Pixel Art */
-.pixel-box {
-  background: var(--card);
-  padding: 20px;
-  border: 4px solid var(--border);
-  box-shadow: 6px 6px 0px rgba(0,0,0,0.8);
-  position: relative;
-}
+.pixel-box { background: var(--card); padding: 20px; border: 4px solid var(--border); box-shadow: 6px 6px 0px rgba(0,0,0,0.8); position: relative; }
+
+/* Instrucciones */
+.how-to-play h3 { color: var(--accent); font-size: 1.6rem; margin-bottom: 10px; }
+.how-to-play p { font-size: 1.2rem; line-height: 1.4; margin-bottom: 8px; text-transform: none; }
+.how-to-play strong { color: var(--accent); }
 
 /* Header & Stats */
 header { display: flex; flex-direction: column; gap: 15px; }
@@ -52,46 +57,36 @@ header { display: flex; flex-direction: column; gap: 15px; }
 .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; margin-top: 10px; }
 .day-btn { background: var(--track); color: #fff; border: 3px solid #000; box-shadow: 4px 4px 0px #000; padding: 10px 0; font-family: 'VT323'; font-size: 1.3rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
 .day-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #000; }
-.day-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.day-btn.won { background: var(--success); color: #000; }
-.day-btn.lost { background: var(--danger); color: #fff; }
+.day-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.day-btn.won { background: rgba(34, 197, 94, 0.2); border-color: var(--success); color: var(--success); }
+.day-btn.lost { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); }
 .day-btn.resume { background: var(--accent); color: #000; }
+
+/* Vista de Revisión */
+.review-content { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+.review-item { background: var(--bg); border: 2px solid #000; padding: 12px; }
+.review-item.correct { border-left: 8px solid var(--success); }
+.review-item.incorrect { border-left: 8px solid var(--danger); }
+.review-q { font-size: 1.3rem; margin-bottom: 8px; text-transform: none; }
+.review-a { font-size: 1.1rem; color: var(--success); margin-bottom: 4px; }
+.review-a.failed { color: var(--danger); }
+.review-u { font-size: 1.1rem; color: var(--text-muted); }
 
 /* Typography de la Carta */
 .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .q-number { color: var(--accent); font-size: 1.2rem; }
 .cost-badge { background: #000; color: #fff; padding: 4px 10px; font-size: 1.2rem; border: 2px solid var(--accent); }
-.question-title { font-size: 1.8rem; line-height: 1.1; margin-bottom: 20px; }
+.question-title { font-size: 1.8rem; line-height: 1.1; margin-bottom: 20px; text-transform: none; }
 
-/* DUAL SLIDER ENGINE (ARREGLADO Y RETRO) */
+/* DUAL SLIDER ENGINE */
 .range-picker { position: relative; width: 100%; height: 60px; margin: 20px 0; }
 .slider-track { position: absolute; top: 20px; width: 100%; height: 16px; background: #000; border: 3px solid var(--track); }
 .slider-selection { position: absolute; top: 20px; height: 16px; background: var(--accent); border: 3px solid #000; z-index: 1; }
 
-/* Fix de Inputs superpuestos */
-input[type="range"] { 
-  position: absolute; top: 10px; width: 100%; height: 40px; 
-  background: transparent; -webkit-appearance: none; appearance: none; 
-  pointer-events: none; /* Esto evita que el track de uno bloquee al otro */
-  z-index: 5;
-}
-input[type="range"]::-webkit-slider-thumb { 
-  pointer-events: auto; /* Solo el tirador se puede clickar */
-  height: 36px; width: 20px; 
-  background: #fff; border: 4px solid #000; 
-  cursor: ew-resize; -webkit-appearance: none; 
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.5); 
-}
-input[type="range"]::-moz-range-thumb {
-  pointer-events: auto;
-  height: 36px; width: 20px; 
-  background: #fff; border: 4px solid #000; 
-  cursor: ew-resize;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.5); 
-  border-radius: 0;
-}
+input[type="range"] { position: absolute; top: 10px; width: 100%; height: 40px; background: transparent; -webkit-appearance: none; appearance: none; pointer-events: none; z-index: 5; }
+input[type="range"]::-webkit-slider-thumb { pointer-events: auto; height: 36px; width: 20px; background: #fff; border: 4px solid #000; cursor: ew-resize; -webkit-appearance: none; box-shadow: 3px 3px 0px rgba(0,0,0,0.5); }
+input[type="range"]::-moz-range-thumb { pointer-events: auto; height: 36px; width: 20px; background: #fff; border: 4px solid #000; cursor: ew-resize; box-shadow: 3px 3px 0px rgba(0,0,0,0.5); border-radius: 0; }
 
-/* Aguja de Solución */
 .target-needle { position: absolute; top: 0px; width: 6px; height: 50px; background: var(--danger); border: 2px solid #000; transform: translateX(-50%); display: none; z-index: 10; }
 
 .readouts { display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
@@ -102,18 +97,19 @@ input[type="range"]::-moz-range-thumb {
 .feedback.success { color: var(--success); }
 .feedback.error { color: var(--danger); }
 
-.btn-pixel { 
-  width: 100%; background: var(--accent); color: #000; 
-  font-family: 'VT323'; font-size: 1.8rem; border: 4px solid #000; 
-  box-shadow: 6px 6px 0px #000; padding: 12px; cursor: pointer; 
-  transition: transform 0.1s, box-shadow 0.1s; 
-}
+.btn-pixel { width: 100%; background: var(--accent); color: #000; font-family: 'VT323'; font-size: 1.8rem; border: 4px solid #000; box-shadow: 6px 6px 0px #000; padding: 12px; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
 .btn-pixel:active:not(:disabled) { transform: translate(6px, 6px); box-shadow: 0px 0px 0px #000; }
 .btn-pixel:disabled { background: var(--track); color: #aaa; box-shadow: none; transform: none; cursor: not-allowed; }
 
 .small-btn { width: auto; font-size: 1.2rem; padding: 6px 12px; box-shadow: 4px 4px 0px #000; }
 .small-btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #000; }
 
-/* Animaciones Arcade (Sin difuminados, a saltos) */
 @keyframes dropIn { 0% { top: -40px; opacity: 0; } 100% { top: -5px; opacity: 1; } }
 .anim-drop { animation: dropIn 0.2s steps(3) forwards; display: block !important; }
+
+/* Streak y Cabecera Menú */
+.top-bar-menu { display: flex; justify-content: flex-end; margin-bottom: 5px; }
+.streak-badge { background: #000; border: 2px solid var(--accent); padding: 4px 12px; font-size: 1.4rem; color: #fff; display: flex; align-items: center; gap: 6px; box-shadow: 2px 2px 0px rgba(0,0,0,0.5); }
+.streak-icon { font-size: 1.2rem; }
+.brand-right { display: flex; align-items: center; gap: 10px; }
+.game-streak { font-size: 1.1rem; padding: 2px 8px; }
