@@ -2,6 +2,7 @@ let gameData = null;
 let currentOfficialDay = 1;
 let playingDay = null;
 let currentStreak = 0;
+let currentReviewDay = null; // Guarda el día que se está viendo en el resumen
 
 // Estado en LocalStorage
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
@@ -75,6 +76,49 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
 });
 
+// COMPARTIR RESULTADO
+document.getElementById('btn-share').addEventListener('click', () => {
+  const record = savedState.history[currentReviewDay];
+  const dayData = gameData.retos.find(r => r.dia === currentReviewDay);
+  
+  let text = `LA HORQUILLA - Día ${currentReviewDay} ${record.status === 'won' ? '🏆' : '💀'}\n`;
+  text += `🔥 Racha: ${currentStreak}\n\n`;
+  
+  let errors = 0;
+  for (let i = 0; i < dayData.preguntas.length; i++) {
+    text += `${i+1}. `;
+    if (record.answers && record.answers[i]) {
+      if (record.answers[i].correct) {
+        text += '🟩';
+      } else {
+        text += '🟥';
+        errors++;
+      }
+    } else {
+      text += '⬛'; // Pregunta no alcanzada
+    }
+    text += '\n';
+  }
+  
+  if (record.status === 'won') {
+    text += `\nDaño: ${record.totalDamage}%`;
+  }
+  
+  // Calcular vidas restantes reales al acabar
+  const livesLeft = record.status === 'won' ? Math.max(0, 3 - errors) : 0;
+  text += `\nVidas: ${'❤️'.repeat(livesLeft) + '🖤'.repeat(3 - livesLeft)}\n`;
+  text += `\nJuega en: https://alejandrocoonde.github.io/lahorquilla/`;
+
+  // Copiar al portapapeles y mostrar toast
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }).catch(err => {
+    alert("Error al copiar. Tu navegador no lo permite automáticamente.");
+  });
+});
+
 // 2. Archivo
 function renderArchive() {
   const grid = document.getElementById('days-grid');
@@ -113,23 +157,22 @@ function renderArchive() {
   }
 }
 
-// 3. Revisión de Partida (MODIFICADO para mostrar las no jugadas)
+// 3. Revisión de Partida
 function showReview(diaId) {
+  currentReviewDay = diaId; // Guardamos el día que estamos viendo para compartirlo
   const record = savedState.history[diaId];
-  const dayData = gameData.retos.find(r => r.dia === diaId); // Cargamos todas las preguntas del día
+  const dayData = gameData.retos.find(r => r.dia === diaId); 
   
   document.getElementById('review-title').textContent = `REVISIÓN DÍA ${diaId} - ${record.status === 'won' ? 'VICTORIA' : 'DERROTA'}`;
   const content = document.getElementById('review-content');
   content.innerHTML = '';
   
   if (record.answers && record.answers.length > 0) {
-    // Recorremos TODAS las preguntas de ese día (suele ser 5)
     dayData.preguntas.forEach((q, i) => {
-      const ans = record.answers[i]; // Buscamos si el usuario llegó a responderla
+      const ans = record.answers[i]; 
       const div = document.createElement('div');
       
       if (ans) {
-        // PREGUNTA RESPONDIDA (Acierto o Fallo)
         div.className = `review-item ${ans.correct ? 'correct' : 'incorrect'}`;
         div.innerHTML = `
           <div class="review-q">${i+1}. ${ans.q}</div>
@@ -137,7 +180,6 @@ function showReview(diaId) {
           <div class="review-u">Tu horquilla: ${ans.min} - ${ans.max}</div>
         `;
       } else {
-        // PREGUNTA NO ALCANZADA (Murió antes)
         div.className = `review-item unanswered`;
         div.innerHTML = `
           <div class="review-q" style="color: var(--text-muted);">${i+1}. ${q.texto}</div>
