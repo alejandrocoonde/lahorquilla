@@ -50,10 +50,10 @@ function calculateStreak() {
   currentStreak = 0;
   for (let i = currentOfficialDay; i >= 1; i--) {
     const record = savedState.history[i];
-    if (record && record.status === 'won') {
+    if (record) {
       currentStreak++;
     } else if (i === currentOfficialDay && !record) {
-      continue; // No romper la racha si hoy aún no ha jugado
+      continue; 
     } else {
       break;
     }
@@ -75,12 +75,11 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
 });
 
-// 2. Archivo (ARREGLADO: Ahora pinta todos los días)
+// 2. Archivo
 function renderArchive() {
   const grid = document.getElementById('days-grid');
   grid.innerHTML = '';
 
-  // Cogemos el total de días disponibles en el JSON
   const totalDays = Math.max(currentOfficialDay, gameData.retos.length);
 
   for (let i = 1; i <= totalDays; i++) {
@@ -90,15 +89,12 @@ function renderArchive() {
     const dataExists = gameData.retos.find(r => r.dia === i);
     
     if (i > currentOfficialDay) {
-      // Días futuros bloqueados
       btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">PRÓX.</span>`;
       btn.disabled = true;
     } else if (!dataExists) {
-      // Días que pasaron pero no están en el JSON (por si acaso)
       btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem; color:#aaa">EN OBRAS</span>`;
       btn.disabled = true;
     } else {
-      // Días jugables (Hoy o en el pasado)
       const historyRecord = savedState.history[i];
       if (historyRecord) {
         btn.innerHTML = `DÍA ${i}<br><span style="font-size: 1rem;">VER RESUMEN</span>`;
@@ -117,22 +113,38 @@ function renderArchive() {
   }
 }
 
-// 3. Revisión de Partida
+// 3. Revisión de Partida (MODIFICADO para mostrar las no jugadas)
 function showReview(diaId) {
   const record = savedState.history[diaId];
+  const dayData = gameData.retos.find(r => r.dia === diaId); // Cargamos todas las preguntas del día
+  
   document.getElementById('review-title').textContent = `REVISIÓN DÍA ${diaId} - ${record.status === 'won' ? 'VICTORIA' : 'DERROTA'}`;
   const content = document.getElementById('review-content');
   content.innerHTML = '';
   
   if (record.answers && record.answers.length > 0) {
-    record.answers.forEach((ans, i) => {
+    // Recorremos TODAS las preguntas de ese día (suele ser 5)
+    dayData.preguntas.forEach((q, i) => {
+      const ans = record.answers[i]; // Buscamos si el usuario llegó a responderla
       const div = document.createElement('div');
-      div.className = `review-item ${ans.correct ? 'correct' : 'incorrect'}`;
-      div.innerHTML = `
-        <div class="review-q">${i+1}. ${ans.q}</div>
-        <div class="review-a ${ans.correct ? '' : 'failed'}">Respuesta real: ${ans.resp} ${ans.unidad}</div>
-        <div class="review-u">Tu horquilla: ${ans.min} - ${ans.max}</div>
-      `;
+      
+      if (ans) {
+        // PREGUNTA RESPONDIDA (Acierto o Fallo)
+        div.className = `review-item ${ans.correct ? 'correct' : 'incorrect'}`;
+        div.innerHTML = `
+          <div class="review-q">${i+1}. ${ans.q}</div>
+          <div class="review-a ${ans.correct ? '' : 'failed'}">Respuesta real: ${ans.resp} ${ans.unidad}</div>
+          <div class="review-u">Tu horquilla: ${ans.min} - ${ans.max}</div>
+        `;
+      } else {
+        // PREGUNTA NO ALCANZADA (Murió antes)
+        div.className = `review-item unanswered`;
+        div.innerHTML = `
+          <div class="review-q" style="color: var(--text-muted);">${i+1}. ${q.texto}</div>
+          <div class="review-a" style="color: var(--text-muted);">Respuesta real: ${q.respuesta} ${q.unidad}</div>
+          <div class="review-u" style="color: var(--text-muted);">[NO ALCANZADA]</div>
+        `;
+      }
       content.appendChild(div);
     });
   } else {
@@ -307,6 +319,7 @@ function handleAction() {
       actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
       actionBtn.style.background = 'var(--danger)';
       actionBtn.style.color = '#fff';
+      actionBtn.disabled = true;
       endGame('lost');
     } else if (currentIdx < playingDay.preguntas.length - 1) {
       actionBtn.textContent = 'SIGUIENTE PREGUNTA';
@@ -315,6 +328,7 @@ function handleAction() {
     } else {
       actionBtn.textContent = '¡NIVEL SUPERADO!';
       actionBtn.style.background = 'var(--success)';
+      actionBtn.disabled = true;
       endGame('won');
     }
   } else {
@@ -328,6 +342,8 @@ function endGame(status) {
   if (status === 'won') {
     feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO RECIBIDO: ${totalDamage}%`;
     feedbackTxt.classList.replace('error', 'success');
+  } else {
+    feedbackTxt.innerHTML += `<br><span style="font-size: 1.2rem; color: #fff;">Saliendo al menú...</span>`;
   }
 
   savedState.history[playingDay.dia] = { 

@@ -113,3 +113,5 @@ input[type="range"]::-moz-range-thumb { pointer-events: auto; height: 36px; widt
 .streak-icon { font-size: 1.2rem; }
 .brand-right { display: flex; align-items: center; gap: 10px; }
 .game-streak { font-size: 1.1rem; padding: 2px 8px; }
+
+.review-item.unanswered { border-left: 8px solid var(--track); opacity: 0.7; }
