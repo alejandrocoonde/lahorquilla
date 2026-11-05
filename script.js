@@ -2,7 +2,7 @@ let gameData = null;
 let currentOfficialDay = 1;
 let playingDay = null;
 
-// Estado en LocalStorage (añadidos daño total y estado de reseteo)
+// Estado en LocalStorage
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
   history: {}, 
   activeSession: null 
@@ -11,7 +11,7 @@ let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
 // Variables de partida
 let currentIdx = 0, health = 100, lives = 3, isAnswered = false;
 let totalDamage = 0;
-let pendingHealthReset = false; // Indica si hay que curar en el próximo turno
+let pendingHealthReset = false;
 
 // Elementos DOM
 const minSlider = document.getElementById('min-slider');
@@ -101,7 +101,6 @@ function startGame(diaId, isResume) {
 
   document.getElementById('day-badge').textContent = `DÍA ${diaId}`;
   
-  // Si en la ronda anterior te mataron y lo dejaste a medias, recupera la vida ahora.
   if (pendingHealthReset) applyHealthReset(); 
   else updateHealthUI();
 
@@ -143,9 +142,10 @@ function loadQuestion(idx) {
   actionBtn.style.color = '#000';
   actionBtn.disabled = false;
   
-  minSlider.style.pointerEvents = 'auto';
-  maxSlider.style.pointerEvents = 'auto';
-  // FIX OVERLAP: Reset Z-index
+  // SOLUCIÓN AL BUG: Usamos disabled en lugar de pointerEvents
+  minSlider.disabled = false;
+  maxSlider.disabled = false;
+  
   minSlider.style.zIndex = 5;
   maxSlider.style.zIndex = 5;
 
@@ -186,7 +186,6 @@ function updateSliders() {
   
   costValTxt.textContent = `COSTE: ${costPercent}%`;
   
-  // Cambia a rojo si el coste actual es letal
   if (costPercent >= health) {
     costValTxt.style.color = 'var(--danger)';
     costValTxt.style.borderColor = 'var(--danger)';
@@ -205,23 +204,21 @@ function handleAction() {
     const costPercent = Math.round(((userMax - userMin) / range) * 100);
     const targetPercent = ((q.respuesta - q.min) / range) * 100;
 
-    minSlider.style.pointerEvents = 'none';
-    maxSlider.style.pointerEvents = 'none';
+    // SOLUCIÓN AL BUG: Bloquear el input de forma nativa
+    minSlider.disabled = true;
+    maxSlider.disabled = true;
 
     targetNeedle.style.left = targetPercent + '%';
     targetNeedle.classList.add('anim-drop');
 
-    // Mecánica de Salud y Daño
     totalDamage += costPercent;
     health -= costPercent;
     
     const isCorrect = q.respuesta >= userMin && q.respuesta <= userMax;
-    let lifeLost = false;
 
     if (!isCorrect || health <= 0) {
-      lifeLost = true;
       lives--;
-      pendingHealthReset = true; // Regenerará al pasar de ronda
+      pendingHealthReset = true;
       
       if (!isCorrect) feedbackTxt.innerHTML = `¡FALLO!<br>ERA ${q.respuesta}.`;
       else feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
@@ -237,13 +234,11 @@ function handleAction() {
 
     isAnswered = true;
     
-    // Guardar Estado
     savedState.activeSession.health = health;
     savedState.activeSession.lives = lives;
     savedState.activeSession.totalDamage = totalDamage;
     savedState.activeSession.pendingHealthReset = pendingHealthReset;
 
-    // Conclusión del turno
     if (lives <= 0) {
       actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
       actionBtn.style.background = 'var(--danger)';
@@ -266,9 +261,8 @@ function handleAction() {
 }
 
 function endGame(status) {
-  // Mostramos el daño total recibido
   if (status === 'won') {
-    feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO TOTAL RECIBIDO: ${totalDamage}%`;
+    feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO RECIBIDO: ${totalDamage}%`;
     feedbackTxt.classList.replace('error', 'success');
   }
 
@@ -280,7 +274,7 @@ function endGame(status) {
     gameView.classList.add('hidden');
     archiveView.classList.add('show');
     renderArchive();
-  }, 4000); // 4 segundos para ver las estadísticas finales antes de volver al menú
+  }, 4000); 
 }
 
 function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
