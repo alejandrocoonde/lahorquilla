@@ -13,6 +13,7 @@
   <div id="archive-view" class="archive-container show">
     
     <div class="top-bar-menu">
+      <button id="btn-stats" class="btn-pixel small-btn" style="background: var(--card); color: var(--accent);">📊 STATS</button>
       <div class="streak-badge">
         <span class="streak-icon">🔥</span>
         <span id="menu-streak">0</span>
@@ -22,6 +23,12 @@
     <div class="title-container">
       <h1 class="main-title">LA HORQUILLA</h1>
       <span class="signature">by 87conde</span>
+    </div>
+
+    <!-- CONTADOR DE TIEMPO PARA EL PRÓXIMO DÍA -->
+    <div class="pixel-box countdown-box">
+      <span class="countdown-label">⏳ PRÓXIMO RETO EN:</span>
+      <span id="countdown-timer" class="mono">--:--:--</span>
     </div>
 
     <div class="pixel-box">
@@ -38,6 +45,32 @@
     </div>
   </div>
 
+  <!-- VISTA DE ESTADÍSTICAS (MODAL) -->
+  <div id="stats-view" class="archive-container hidden">
+    <div class="pixel-box">
+      <h2>ESTADÍSTICAS GLOBALES</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span id="stat-played" class="stat-num">0</span>
+          <span class="stat-label">Jugadas</span>
+        </div>
+        <div class="stat-box">
+          <span id="stat-won" class="stat-num">0</span>
+          <span class="stat-label">Victorias</span>
+        </div>
+        <div class="stat-box">
+          <span id="stat-winrate" class="stat-num">0%</span>
+          <span class="stat-label">Éxito</span>
+        </div>
+        <div class="stat-box">
+          <span id="stat-streak" class="stat-num">0</span>
+          <span class="stat-label">Mejor Racha</span>
+        </div>
+      </div>
+      <button id="btn-close-stats" class="btn-pixel" style="margin-top: 20px;">VOLVER</button>
+    </div>
+  </div>
+
   <!-- VISTA DE REVISIÓN DE PARTIDA -->
   <div id="review-view" class="archive-container hidden">
     <div class="pixel-box">
@@ -46,7 +79,6 @@
       
       <div id="review-content" class="review-content"></div>
       
-      <!-- BOTONES DE COMPARTIR Y VOLVER -->
       <button id="btn-share" class="btn-pixel share-btn" style="margin-top: 20px;">COMPARTIR RESULTADO 📋</button>
       <button id="btn-back-archive" class="btn-pixel" style="margin-top: 10px; background: var(--track); color: #fff;">VOLVER AL MENÚ</button>
     </div>
@@ -54,7 +86,7 @@
 
   <!-- JUEGO PRINCIPAL -->
   <div id="game-view" class="game-container hidden">
-    <header class="pixel-box">
+    <header class="pixel-box" id="game-header-box">
       <div class="brand">
         <h1>LA HORQUILLA <span id="day-badge" class="badge">DÍA -</span></h1>
         <div class="brand-right">
@@ -78,7 +110,7 @@
       </div>
     </header>
 
-    <div class="question-card pixel-box">
+    <div class="question-card pixel-box" id="question-card-box">
       <div class="question-header">
         <span id="question-number" class="q-number">PREGUNTA - / -</span>
         <span id="cost-val" class="cost-badge">COSTE: 0%</span>
@@ -106,7 +138,7 @@
     </div>
   </div>
 
-  <!-- NOTIFICACIÓN DE COPIADO -->
+  <!-- NOTIFICACIÓN TOAST -->
   <div id="toast" class="toast">¡COPIADO AL PORTAPAPELES!</div>
 
   <script src="script.js"></script>

@@ -2,7 +2,7 @@ let gameData = null;
 let currentOfficialDay = 1;
 let playingDay = null;
 let currentStreak = 0;
-let currentReviewDay = null; // Guarda el día que se está viendo en el resumen
+let currentReviewDay = null; 
 
 // Estado en LocalStorage
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
@@ -30,6 +30,7 @@ const feedbackTxt = document.getElementById('feedback-text');
 const archiveView = document.getElementById('archive-view');
 const gameView = document.getElementById('game-view');
 const reviewView = document.getElementById('review-view');
+const statsView = document.getElementById('stats-view');
 
 // 1. Inicialización
 fetch('datos.json')
@@ -44,7 +45,28 @@ fetch('datos.json')
     currentOfficialDay = Math.max(1, dayDiff + 1);
     calculateStreak();
     renderArchive();
+    initCountdown(); // Iniciar cuenta atrás en vivo
   });
+
+// Cuenta atrás para el día siguiente
+function initCountdown() {
+  function updateTimer() {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const diff = tomorrow - now;
+    const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+    const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+    const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+    
+    const timerEl = document.getElementById('countdown-timer');
+    if (timerEl) timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+}
 
 // Lógica de Racha
 function calculateStreak() {
@@ -63,9 +85,12 @@ function calculateStreak() {
   document.getElementById('game-streak-text').textContent = currentStreak;
 }
 
+// Navegación de Vistas
 document.getElementById('btn-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
   gameView.classList.add('hidden');
+  reviewView.classList.add('hidden');
+  statsView.classList.add('hidden');
   calculateStreak();
   renderArchive();
 });
@@ -75,6 +100,37 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   reviewView.classList.add('hidden');
   archiveView.classList.add('show');
 });
+
+// Modal de Estadísticas
+document.getElementById('btn-stats').addEventListener('click', () => {
+  calcularEstadisticasGlobales();
+  archiveView.classList.remove('show');
+  statsView.classList.remove('hidden');
+  statsView.classList.add('show');
+});
+
+document.getElementById('btn-close-stats').addEventListener('click', () => {
+  statsView.classList.remove('show');
+  statsView.classList.add('hidden');
+  archiveView.classList.add('show');
+});
+
+function calcularEstadisticasGlobales() {
+  const historyKeys = Object.keys(savedState.history);
+  const played = historyKeys.length;
+  let won = 0;
+  
+  historyKeys.forEach(k => {
+    if (savedState.history[k].status === 'won') won++;
+  });
+
+  const winrate = played > 0 ? Math.round((won / played) * 100) : 0;
+
+  document.getElementById('stat-played').textContent = played;
+  document.getElementById('stat-won').textContent = won;
+  document.getElementById('stat-winrate').textContent = winrate + '%';
+  document.getElementById('stat-streak').textContent = currentStreak;
+}
 
 // COMPARTIR RESULTADO
 document.getElementById('btn-share').addEventListener('click', () => {
@@ -95,7 +151,7 @@ document.getElementById('btn-share').addEventListener('click', () => {
         errors++;
       }
     } else {
-      text += '⬛'; // Pregunta no alcanzada
+      text += '⬛'; 
     }
     text += '\n';
   }
@@ -104,18 +160,16 @@ document.getElementById('btn-share').addEventListener('click', () => {
     text += `\nDaño: ${record.totalDamage}%`;
   }
   
-  // Calcular vidas restantes reales al acabar
   const livesLeft = record.status === 'won' ? Math.max(0, 3 - errors) : 0;
   text += `\nVidas: ${'❤️'.repeat(livesLeft) + '🖤'.repeat(3 - livesLeft)}\n`;
   text += `\nJuega en: https://alejandrocoonde.github.io/lahorquilla/`;
 
-  // Copiar al portapapeles y mostrar toast
   navigator.clipboard.writeText(text).then(() => {
     const toast = document.getElementById('toast');
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
-  }).catch(err => {
-    alert("Error al copiar. Tu navegador no lo permite automáticamente.");
+  }).catch(() => {
+    alert("Error al copiar al portapapeles.");
   });
 });
 
@@ -159,7 +213,7 @@ function renderArchive() {
 
 // 3. Revisión de Partida
 function showReview(diaId) {
-  currentReviewDay = diaId; // Guardamos el día que estamos viendo para compartirlo
+  currentReviewDay = diaId; 
   const record = savedState.history[diaId];
   const dayData = gameData.retos.find(r => r.dia === diaId); 
   
@@ -190,7 +244,7 @@ function showReview(diaId) {
       content.appendChild(div);
     });
   } else {
-    content.innerHTML = '<p>Datos de horquillas no disponibles para esta partida antigua.</p>';
+    content.innerHTML = '<p>Datos no disponibles.</p>';
   }
 
   archiveView.classList.remove('show');
@@ -269,8 +323,8 @@ function loadQuestion(idx) {
   updateSliders();
 }
 
-minSlider.addEventListener('input', (e) => { minSlider.style.zIndex = 10; maxSlider.style.zIndex = 5; updateSliders(); });
-maxSlider.addEventListener('input', (e) => { maxSlider.style.zIndex = 10; minSlider.style.zIndex = 5; updateSliders(); });
+minSlider.addEventListener('input', () => { minSlider.style.zIndex = 10; maxSlider.style.zIndex = 5; updateSliders(); });
+maxSlider.addEventListener('input', () => { maxSlider.style.zIndex = 10; minSlider.style.zIndex = 5; updateSliders(); });
 
 function updateSliders() {
   let minVal = parseInt(minSlider.value);
@@ -334,15 +388,25 @@ function handleAction() {
       correct: (isCorrect && health > 0)
     });
 
+    const cardBox = document.getElementById('question-card-box');
+
     if (!isCorrect || health <= 0) {
       lives--;
       pendingHealthReset = true;
       
+      // DISPARAR VIBRACIÓN HÁPTICA Y SCREEN SHAKE
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      cardBox.classList.add('screen-shake');
+      setTimeout(() => cardBox.classList.remove('screen-shake'), 400);
+
       if (!isCorrect) feedbackTxt.innerHTML = `¡FALLO!<br>ERA ${q.respuesta}.`;
       else feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
       
       feedbackTxt.classList.add('show', 'error');
     } else {
+      cardBox.classList.add('flash-success');
+      setTimeout(() => cardBox.classList.remove('flash-success'), 500);
+
       feedbackTxt.innerHTML = `¡CORRECTO!<br>ERA ${q.respuesta}.`;
       feedbackTxt.classList.add('show', 'success');
     }
