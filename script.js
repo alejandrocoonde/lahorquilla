@@ -343,7 +343,6 @@ function startGame(diaId, isResume) {
 
 
 function updateHealthUI() {
-  // Calculamos el porcentaje de la barra basado en un máximo de 200
   const fillPercentage = Math.max(0, (health / 200) * 100);
   document.getElementById('health-fill').style.width = fillPercentage + '%';
   document.getElementById('health-text').textContent = Math.max(0, health) + '%';
@@ -373,6 +372,7 @@ function loadQuestion(idx) {
   minSlider.style.zIndex = 5;
   maxSlider.style.zIndex = 5;
 
+  // Llama a updateSliders, lo que encogerá automáticamente la horquilla para que se adapte a tu salud
   updateSliders();
 }
 
@@ -392,24 +392,62 @@ function updateSliders() {
 
   const q = playingDay.preguntas[currentIdx];
   const range = q.max - q.min;
+
+  // --- BLOQUEO FÍSICO Y MATEMÁTICO: LA HORQUILLA NUNCA PUEDE IGUALAR O SUPERAR TU SALUD ---
+  
+  // 1. Barrera primaria: empuje inmediato por distancia (rápido para grandes valores)
+  const maxAllowedCost = Math.max(0, health - 1);
+  const maxDistance = (maxAllowedCost / 100) * range;
+  
+  if ((maxVal - minVal) > maxDistance) {
+    if (document.activeElement === minSlider) {
+      minVal = Math.ceil(maxVal - maxDistance);
+      minSlider.value = minVal;
+    } else {
+      // Si el elemento activo es maxSlider O se acaba de cargar la pregunta
+      maxVal = Math.floor(minVal + maxDistance);
+      maxSlider.value = maxVal;
+    }
+  }
+
+  // 2. Barrera secundaria: ajuste fino para proteger del redondeo en el cálculo porcentual final
+  let minPercentForCalc = ((minVal - q.min) / range) * 100;
+  let maxPercentForCalc = ((maxVal - q.min) / range) * 100;
+  let costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
+
+  let loops = 0;
+  while (costPercent >= health && health > 0 && loops < 10) {
+    if (document.activeElement === minSlider) {
+      minVal++;
+      if (minVal > maxVal) minVal = maxVal;
+      minSlider.value = minVal;
+    } else {
+      maxVal--;
+      if (maxVal < minVal) maxVal = minVal;
+      maxSlider.value = maxVal;
+    }
+    
+    minPercentForCalc = ((minVal - q.min) / range) * 100;
+    maxPercentForCalc = ((maxVal - q.min) / range) * 100;
+    costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
+    loops++;
+    if (minVal === maxVal) break; // Si ya colisionan (ancho 0), no hay más donde rascar
+  }
+  // --- FIN BLOQUEO ---
+
   const minPercent = ((minVal - q.min) / range) * 100;
   const maxPercent = ((maxVal - q.min) / range) * 100;
-  const costPercent = Math.round(maxPercent - minPercent);
 
   sliderSelection.style.left = minPercent + '%';
-  sliderSelection.style.width = costPercent + '%';
+  sliderSelection.style.width = (maxPercent - minPercent) + '%';
   minValTxt.textContent = `${minVal} ${q.unidad}`;
   maxValTxt.textContent = `${maxVal} ${q.unidad}`;
   
   costValTxt.textContent = `COSTE: ${costPercent}%`;
   
-  if (costPercent >= health) {
-    costValTxt.style.color = 'var(--danger)';
-    costValTxt.style.borderColor = 'var(--danger)';
-  } else {
-    costValTxt.style.color = '#fff';
-    costValTxt.style.borderColor = 'var(--accent)';
-  }
+  // Limpiamos los colores rojos de muerte, porque ya es imposible suicidarse con el coste
+  costValTxt.style.color = '#fff';
+  costValTxt.style.borderColor = 'var(--accent)';
 }
 
 function handleAction() {
@@ -429,13 +467,10 @@ function handleAction() {
 
     const isCorrect = q.respuesta >= userMin && q.respuesta <= userMax;
 
-    // APLICACIÓN DE LA NUEVA LÓGICA:
     if (isCorrect) {
-        // Solo gastamos salud si la respuesta fue correcta
         totalDamage += costPercent;
         health -= costPercent;
     } else {
-        // Si fallamos, perdemos una vida pero no gastamos salud
         lives--;
     }
 
@@ -450,19 +485,14 @@ function handleAction() {
 
     const cardBox = document.getElementById('question-card-box');
 
-    // CONDICIÓN DE DERROTA (Sin vidas o sin salud)
-    if (!isCorrect || health <= 0) {
+    // La derrota por vida 0 es ahora la única amenaza de muerte inmediata
+    if (!isCorrect) {
       
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       cardBox.classList.add('screen-shake');
       setTimeout(() => cardBox.classList.remove('screen-shake'), 400);
 
-      if (!isCorrect) {
-          feedbackTxt.innerHTML = `¡FALLO!<br>PIERDES 1 VIDA.<br>ERA ${q.respuesta}.`;
-      } else {
-          feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
-      }
-      
+      feedbackTxt.innerHTML = `¡FALLO!<br>PIERDES 1 VIDA.<br>ERA ${q.respuesta}.`;
       feedbackTxt.classList.add('show', 'error');
     } else {
       cardBox.classList.add('flash-success');
@@ -481,7 +511,7 @@ function handleAction() {
     savedState.activeSession.lives = lives;
     savedState.activeSession.totalDamage = totalDamage;
 
-    if (lives <= 0 || health <= 0) {
+    if (lives <= 0) {
       actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
       actionBtn.style.background = 'var(--danger)';
       actionBtn.style.color = '#fff';
