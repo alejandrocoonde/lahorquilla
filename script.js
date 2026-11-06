@@ -4,11 +4,6 @@ let playingDay = null;
 let currentStreak = 0;
 let currentReviewDay = null; 
 
-// Estado de audio
-let isMuted = localStorage.getItem('horquillaMuted') === 'true';
-const bgMusic = document.getElementById('bg-music');
-const muteBtn = document.getElementById('btn-mute');
-
 // Estado en LocalStorage
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
   history: {}, 
@@ -50,41 +45,7 @@ fetch('datos.json')
     calculateStreak();
     renderArchive();
     initCountdown();
-    initAudio();
   });
-
-// Control de Sonido
-function initAudio() {
-  updateMuteUI();
-  
-  document.addEventListener('click', () => {
-    if (bgMusic.paused && !isMuted) {
-      bgMusic.play().catch(() => {});
-    }
-  }, { once: false });
-
-  muteBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    isMuted = !isMuted;
-    localStorage.setItem('horquillaMuted', isMuted);
-    updateMuteUI();
-    if (isMuted) {
-      bgMusic.pause();
-    } else {
-      bgMusic.play().catch(() => {});
-    }
-  });
-}
-
-function updateMuteUI() {
-  if (isMuted) {
-    bgMusic.muted = true;
-    muteBtn.textContent = '🔇';
-  } else {
-    bgMusic.muted = false;
-    muteBtn.textContent = '🔊';
-  }
-}
 
 function initCountdown() {
   function updateTimer() {
@@ -137,7 +98,6 @@ document.getElementById('btn-back-archive').addEventListener('click', () => {
   archiveView.classList.add('show');
 });
 
-// Desplegar/Ocultar Archivo
 document.getElementById('btn-show-archive').addEventListener('click', () => {
   const fullSection = document.getElementById('full-archive-section');
   fullSection.classList.add('show-archive');
@@ -149,7 +109,6 @@ document.getElementById('btn-close-archive').addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// Modal de Estadísticas
 document.getElementById('btn-stats').addEventListener('click', () => {
   calcularEstadisticasGlobales();
   archiveView.classList.remove('show');
@@ -221,7 +180,7 @@ document.getElementById('btn-share').addEventListener('click', () => {
   });
 });
 
-// Renderizar Cuadrículas (Reto actual + Archivo)
+// Renderizar Cuadrículas
 function renderArchive() {
   const currentWeekGrid = document.getElementById('current-week-grid');
   const fullDaysGrid = document.getElementById('full-days-grid');
@@ -271,7 +230,6 @@ function createDayButton(i) {
   return btn;
 }
 
-// 3. Revisión de Partida
 function showReview(diaId) {
   currentReviewDay = diaId; 
   const record = savedState.history[diaId];
@@ -312,7 +270,6 @@ function showReview(diaId) {
   reviewView.classList.add('show');
 }
 
-// 4. Control de Partida
 function startGame(diaId, isResume) {
   playingDay = gameData.retos.find(r => r.dia === diaId);
   
@@ -371,7 +328,6 @@ function loadQuestion(idx) {
   minSlider.style.zIndex = 5;
   maxSlider.style.zIndex = 5;
 
-  // Llama a updateSliders, lo que encogerá automáticamente la horquilla y pintará los mensajes
   updateSliders();
 }
 
@@ -392,51 +348,9 @@ function updateSliders() {
   const q = playingDay.preguntas[currentIdx];
   const range = q.max - q.min;
 
-  // BARRERA FÍSICA Y MATEMÁTICA
-  let hitBarrier = false;
-  const maxAllowedCost = Math.max(0, health - 1); // La horquilla máxima es Salud - 1
-  const maxDistance = (maxAllowedCost / 100) * range;
-  
-  // 1. Barrera primaria para evitar arrastres bruscos
-  if ((maxVal - minVal) > maxDistance) {
-    hitBarrier = true;
-    if (document.activeElement === minSlider) {
-      minVal = Math.ceil(maxVal - maxDistance);
-      minSlider.value = minVal;
-    } else {
-      maxVal = Math.floor(minVal + maxDistance);
-      maxSlider.value = maxVal;
-    }
-  }
-
-  // 2. Barrera secundaria fina por redondeos de porcentaje
-  let minPercentForCalc = ((minVal - q.min) / range) * 100;
-  let maxPercentForCalc = ((maxVal - q.min) / range) * 100;
-  let costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
-
-  let loops = 0;
-  while (costPercent >= health && health > 0 && loops < 10) {
-    hitBarrier = true;
-    if (document.activeElement === minSlider) {
-      minVal++;
-      if (minVal > maxVal) minVal = maxVal;
-      minSlider.value = minVal;
-    } else {
-      maxVal--;
-      if (maxVal < minVal) maxVal = minVal;
-      maxSlider.value = maxVal;
-    }
-    
-    minPercentForCalc = ((minVal - q.min) / range) * 100;
-    maxPercentForCalc = ((maxVal - q.min) / range) * 100;
-    costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
-    loops++;
-    if (minVal === maxVal) break; 
-  }
-  // --- FIN BLOQUEO ---
-
   const minPercent = ((minVal - q.min) / range) * 100;
   const maxPercent = ((maxVal - q.min) / range) * 100;
+  const costPercent = Math.round(maxPercent - minPercent);
 
   sliderSelection.style.left = minPercent + '%';
   sliderSelection.style.width = (maxPercent - minPercent) + '%';
@@ -445,14 +359,18 @@ function updateSliders() {
   
   costValTxt.textContent = `COSTE: ${costPercent}%`;
   
-  // GESTIÓN DE AVISOS Y ERRORES VISUALES
+  // El color del coste cambia a rojo si te estás pasando
+  if (costPercent >= health) {
+    costValTxt.style.color = 'var(--danger)';
+    costValTxt.style.borderColor = 'var(--danger)';
+  } else {
+    costValTxt.style.color = '#fff';
+    costValTxt.style.borderColor = 'var(--accent)';
+  }
+
+  // MENSAJE DE ADVERTENCIA MIENTRAS MUEVES LOS TIRADORES
   if (!isAnswered) {
-    if (hitBarrier) {
-        feedbackTxt.innerHTML = `¡ERROR!<br>LA HORQUILLA TIENE QUE SER MENOR QUE LA SALUD DISPONIBLE.`;
-        feedbackTxt.className = 'feedback show error';
-        feedbackTxt.style.color = 'var(--danger)';
-    } else if (health < 100) {
-        // Mostramos el aviso amarillo tal cual lo pediste si la salud baja de 100
+    if (health < 100) {
         feedbackTxt.innerHTML = `¡CUIDADO! TU SALUD ES DE ${health}%, POR LO QUE TU HORQUILLA MÁXIMA PUEDE SER DE ${Math.max(0, health - 1)}%.`;
         feedbackTxt.className = 'feedback show';
         feedbackTxt.style.color = 'var(--accent)'; 
@@ -470,6 +388,22 @@ function handleAction() {
     const userMax = parseInt(maxSlider.value, 10);
     const range = q.max - q.min;
     const costPercent = Math.round(((userMax - userMin) / range) * 100);
+
+    // --- NUEVO: BLOQUEO AL INTENTAR CONFIRMAR ---
+    if (costPercent >= health) {
+        const cardBox = document.getElementById('question-card-box');
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        cardBox.classList.add('screen-shake');
+        setTimeout(() => cardBox.classList.remove('screen-shake'), 400);
+
+        feedbackTxt.innerHTML = `¡ERROR!<br>LA HORQUILLA TIENE QUE SER MENOR QUE LA SALUD DISPONIBLE.`;
+        feedbackTxt.className = 'feedback show error';
+        feedbackTxt.style.color = 'var(--danger)';
+        
+        // Cortamos aquí, no se consume el turno ni se bloquean los tiradores
+        return; 
+    }
+
     const targetPercent = ((q.respuesta - q.min) / range) * 100;
 
     minSlider.disabled = true;
@@ -498,22 +432,20 @@ function handleAction() {
 
     const cardBox = document.getElementById('question-card-box');
 
-    // Ahora la muerte viene única y exclusivamente por perder tus 3 vidas
     if (!isCorrect) {
-      
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       cardBox.classList.add('screen-shake');
       setTimeout(() => cardBox.classList.remove('screen-shake'), 400);
 
       feedbackTxt.innerHTML = `¡FALLO!<br>PIERDES 1 VIDA.<br>ERA ${q.respuesta}.`;
-      feedbackTxt.classList.add('show', 'error');
+      feedbackTxt.className = 'feedback show error';
       feedbackTxt.style.color = 'var(--danger)';
     } else {
       cardBox.classList.add('flash-success');
       setTimeout(() => cardBox.classList.remove('flash-success'), 500);
 
       feedbackTxt.innerHTML = `¡CORRECTO!<br>ERA ${q.respuesta}.`;
-      feedbackTxt.classList.add('show', 'success');
+      feedbackTxt.className = 'feedback show success';
       feedbackTxt.style.color = 'var(--success)';
     }
 
