@@ -341,7 +341,6 @@ function startGame(diaId, isResume) {
   loadQuestion(currentIdx);
 }
 
-
 function updateHealthUI() {
   const fillPercentage = Math.max(0, (health / 200) * 100);
   document.getElementById('health-fill').style.width = fillPercentage + '%';
@@ -372,7 +371,7 @@ function loadQuestion(idx) {
   minSlider.style.zIndex = 5;
   maxSlider.style.zIndex = 5;
 
-  // Llama a updateSliders, lo que encogerá automáticamente la horquilla para que se adapte a tu salud
+  // Llama a updateSliders, lo que encogerá automáticamente la horquilla y pintará los mensajes
   updateSliders();
 }
 
@@ -393,30 +392,31 @@ function updateSliders() {
   const q = playingDay.preguntas[currentIdx];
   const range = q.max - q.min;
 
-  // --- BLOQUEO FÍSICO Y MATEMÁTICO: LA HORQUILLA NUNCA PUEDE IGUALAR O SUPERAR TU SALUD ---
-  
-  // 1. Barrera primaria: empuje inmediato por distancia (rápido para grandes valores)
-  const maxAllowedCost = Math.max(0, health - 1);
+  // BARRERA FÍSICA Y MATEMÁTICA
+  let hitBarrier = false;
+  const maxAllowedCost = Math.max(0, health - 1); // La horquilla máxima es Salud - 1
   const maxDistance = (maxAllowedCost / 100) * range;
   
+  // 1. Barrera primaria para evitar arrastres bruscos
   if ((maxVal - minVal) > maxDistance) {
+    hitBarrier = true;
     if (document.activeElement === minSlider) {
       minVal = Math.ceil(maxVal - maxDistance);
       minSlider.value = minVal;
     } else {
-      // Si el elemento activo es maxSlider O se acaba de cargar la pregunta
       maxVal = Math.floor(minVal + maxDistance);
       maxSlider.value = maxVal;
     }
   }
 
-  // 2. Barrera secundaria: ajuste fino para proteger del redondeo en el cálculo porcentual final
+  // 2. Barrera secundaria fina por redondeos de porcentaje
   let minPercentForCalc = ((minVal - q.min) / range) * 100;
   let maxPercentForCalc = ((maxVal - q.min) / range) * 100;
   let costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
 
   let loops = 0;
   while (costPercent >= health && health > 0 && loops < 10) {
+    hitBarrier = true;
     if (document.activeElement === minSlider) {
       minVal++;
       if (minVal > maxVal) minVal = maxVal;
@@ -431,7 +431,7 @@ function updateSliders() {
     maxPercentForCalc = ((maxVal - q.min) / range) * 100;
     costPercent = Math.round(maxPercentForCalc - minPercentForCalc);
     loops++;
-    if (minVal === maxVal) break; // Si ya colisionan (ancho 0), no hay más donde rascar
+    if (minVal === maxVal) break; 
   }
   // --- FIN BLOQUEO ---
 
@@ -445,9 +445,22 @@ function updateSliders() {
   
   costValTxt.textContent = `COSTE: ${costPercent}%`;
   
-  // Limpiamos los colores rojos de muerte, porque ya es imposible suicidarse con el coste
-  costValTxt.style.color = '#fff';
-  costValTxt.style.borderColor = 'var(--accent)';
+  // GESTIÓN DE AVISOS Y ERRORES VISUALES
+  if (!isAnswered) {
+    if (hitBarrier) {
+        feedbackTxt.innerHTML = `¡ERROR!<br>LA HORQUILLA TIENE QUE SER MENOR QUE LA SALUD DISPONIBLE.`;
+        feedbackTxt.className = 'feedback show error';
+        feedbackTxt.style.color = 'var(--danger)';
+    } else if (health < 100) {
+        // Mostramos el aviso amarillo tal cual lo pediste si la salud baja de 100
+        feedbackTxt.innerHTML = `¡CUIDADO! TU SALUD ES DE ${health}%, POR LO QUE TU HORQUILLA MÁXIMA PUEDE SER DE ${Math.max(0, health - 1)}%.`;
+        feedbackTxt.className = 'feedback show';
+        feedbackTxt.style.color = 'var(--accent)'; 
+    } else {
+        feedbackTxt.innerHTML = '';
+        feedbackTxt.className = 'feedback';
+    }
+  }
 }
 
 function handleAction() {
@@ -485,7 +498,7 @@ function handleAction() {
 
     const cardBox = document.getElementById('question-card-box');
 
-    // La derrota por vida 0 es ahora la única amenaza de muerte inmediata
+    // Ahora la muerte viene única y exclusivamente por perder tus 3 vidas
     if (!isCorrect) {
       
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
@@ -494,12 +507,14 @@ function handleAction() {
 
       feedbackTxt.innerHTML = `¡FALLO!<br>PIERDES 1 VIDA.<br>ERA ${q.respuesta}.`;
       feedbackTxt.classList.add('show', 'error');
+      feedbackTxt.style.color = 'var(--danger)';
     } else {
       cardBox.classList.add('flash-success');
       setTimeout(() => cardBox.classList.remove('flash-success'), 500);
 
       feedbackTxt.innerHTML = `¡CORRECTO!<br>ERA ${q.respuesta}.`;
       feedbackTxt.classList.add('show', 'success');
+      feedbackTxt.style.color = 'var(--success)';
     }
 
     updateHealthUI();
@@ -536,7 +551,7 @@ function handleAction() {
 function endGame(status) {
   if (status === 'won') {
     feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO RECIBIDO: ${totalDamage}%`;
-    feedbackTxt.classList.replace('error', 'success');
+    feedbackTxt.style.color = 'var(--success)';
   } else {
     feedbackTxt.innerHTML += `<br><span style="font-size: 1.2rem; color: #fff;">Saliendo al menú...</span>`;
   }
