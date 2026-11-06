@@ -4,6 +4,11 @@ let playingDay = null;
 let currentStreak = 0;
 let currentReviewDay = null; 
 
+// Estado de audio
+let isMuted = localStorage.getItem('horquillaMuted') === 'true';
+const bgMusic = document.getElementById('bg-music');
+const muteBtn = document.getElementById('btn-mute');
+
 // Estado en LocalStorage
 let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
   history: {}, 
@@ -11,9 +16,8 @@ let savedState = JSON.parse(localStorage.getItem('horquillaState')) || {
 };
 
 // Variables de partida
-let currentIdx = 0, health = 100, lives = 3, isAnswered = false;
+let currentIdx = 0, health = 200, lives = 3, isAnswered = false;
 let totalDamage = 0;
-let pendingHealthReset = false;
 
 // Elementos DOM
 const minSlider = document.getElementById('min-slider');
@@ -46,7 +50,41 @@ fetch('datos.json')
     calculateStreak();
     renderArchive();
     initCountdown();
+    initAudio();
   });
+
+// Control de Sonido
+function initAudio() {
+  updateMuteUI();
+  
+  document.addEventListener('click', () => {
+    if (bgMusic.paused && !isMuted) {
+      bgMusic.play().catch(() => {});
+    }
+  }, { once: false });
+
+  muteBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isMuted = !isMuted;
+    localStorage.setItem('horquillaMuted', isMuted);
+    updateMuteUI();
+    if (isMuted) {
+      bgMusic.pause();
+    } else {
+      bgMusic.play().catch(() => {});
+    }
+  });
+}
+
+function updateMuteUI() {
+  if (isMuted) {
+    bgMusic.muted = true;
+    muteBtn.textContent = '🔇';
+  } else {
+    bgMusic.muted = false;
+    muteBtn.textContent = '🔊';
+  }
+}
 
 function initCountdown() {
   function updateTimer() {
@@ -190,18 +228,15 @@ function renderArchive() {
   currentWeekGrid.innerHTML = '';
   fullDaysGrid.innerHTML = '';
 
-  // 1. Grid del Reto Actual: Día de hoy y los 7 siguientes (8 botones en total)
   for (let i = currentOfficialDay; i < currentOfficialDay + 8; i++) {
     currentWeekGrid.appendChild(createDayButton(i));
   }
 
-  // 2. Grid del Archivo: Día 1 hasta el Día de hoy
   for (let i = 1; i <= currentOfficialDay; i++) {
     fullDaysGrid.appendChild(createDayButton(i));
   }
 }
 
-// Función auxiliar para fabricar cada botón según su estado
 function createDayButton(i) {
   const btn = document.createElement('button');
   btn.className = 'day-btn';
@@ -286,22 +321,18 @@ function startGame(diaId, isResume) {
     health = savedState.activeSession.health;
     lives = savedState.activeSession.lives;
     totalDamage = savedState.activeSession.totalDamage || 0;
-    pendingHealthReset = savedState.activeSession.pendingHealthReset || false;
   } else {
     currentIdx = 0;
-    health = 100;
+    health = 200;
     lives = 3;
     totalDamage = 0;
-    pendingHealthReset = false;
-    savedState.activeSession = { dia: diaId, qIdx: 0, health: 100, lives: 3, totalDamage: 0, pendingHealthReset: false, answers: [] };
+    savedState.activeSession = { dia: diaId, qIdx: 0, health: 200, lives: 3, totalDamage: 0, answers: [] };
     saveStateToLocal();
   }
 
   document.getElementById('day-badge').textContent = `DÍA ${diaId}`;
   
-  if (pendingHealthReset) applyHealthReset(); 
-  else updateHealthUI();
-
+  updateHealthUI();
   document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
 
   archiveView.classList.remove('show');
@@ -310,14 +341,11 @@ function startGame(diaId, isResume) {
   loadQuestion(currentIdx);
 }
 
-function applyHealthReset() {
-  health = 100;
-  pendingHealthReset = false;
-  updateHealthUI();
-}
 
 function updateHealthUI() {
-  document.getElementById('health-fill').style.width = Math.max(0, health) + '%';
+  // Calculamos el porcentaje de la barra basado en un máximo de 200
+  const fillPercentage = Math.max(0, (health / 200) * 100);
+  document.getElementById('health-fill').style.width = fillPercentage + '%';
   document.getElementById('health-text').textContent = Math.max(0, health) + '%';
 }
 
@@ -399,11 +427,17 @@ function handleAction() {
     targetNeedle.style.left = targetPercent + '%';
     targetNeedle.classList.add('anim-drop');
 
-    totalDamage += costPercent;
-    health -= costPercent;
-    
-    // Aquí validamos matemáticamente de forma segura (>= y <= incluyen los extremos 100%)
     const isCorrect = q.respuesta >= userMin && q.respuesta <= userMax;
+
+    // APLICACIÓN DE LA NUEVA LÓGICA:
+    if (isCorrect) {
+        // Solo gastamos salud si la respuesta fue correcta
+        totalDamage += costPercent;
+        health -= costPercent;
+    } else {
+        // Si fallamos, perdemos una vida pero no gastamos salud
+        lives--;
+    }
 
     savedState.activeSession.answers.push({
       q: q.texto,
@@ -411,21 +445,23 @@ function handleAction() {
       max: userMax,
       resp: q.respuesta,
       unidad: q.unidad,
-      correct: (isCorrect && health > 0)
+      correct: isCorrect 
     });
 
     const cardBox = document.getElementById('question-card-box');
 
+    // CONDICIÓN DE DERROTA (Sin vidas o sin salud)
     if (!isCorrect || health <= 0) {
-      lives--;
-      pendingHealthReset = true;
       
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       cardBox.classList.add('screen-shake');
       setTimeout(() => cardBox.classList.remove('screen-shake'), 400);
 
-      if (!isCorrect) feedbackTxt.innerHTML = `¡FALLO!<br>ERA ${q.respuesta}.`;
-      else feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
+      if (!isCorrect) {
+          feedbackTxt.innerHTML = `¡FALLO!<br>PIERDES 1 VIDA.<br>ERA ${q.respuesta}.`;
+      } else {
+          feedbackTxt.innerHTML = `¡SIN SALUD!<br>ERA ${q.respuesta}.`;
+      }
       
       feedbackTxt.classList.add('show', 'error');
     } else {
@@ -437,16 +473,15 @@ function handleAction() {
     }
 
     updateHealthUI();
-    document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
+    document.getElementById('lives-display').textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3-lives));
 
     isAnswered = true;
     
     savedState.activeSession.health = health;
     savedState.activeSession.lives = lives;
     savedState.activeSession.totalDamage = totalDamage;
-    savedState.activeSession.pendingHealthReset = pendingHealthReset;
 
-    if (lives <= 0) {
+    if (lives <= 0 || health <= 0) {
       actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
       actionBtn.style.background = 'var(--danger)';
       actionBtn.style.color = '#fff';
@@ -464,7 +499,6 @@ function handleAction() {
     }
   } else {
     currentIdx++;
-    if (pendingHealthReset) applyHealthReset();
     loadQuestion(currentIdx);
   }
 }
@@ -497,11 +531,3 @@ function endGame(status) {
 function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
 
 actionBtn.addEventListener('click', handleAction);
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('Service Worker registrado correctamente.'))
-      .catch((err) => console.log('Fallo al registrar el Service Worker:', err));
-  });
-}

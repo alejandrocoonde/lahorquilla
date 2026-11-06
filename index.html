@@ -15,7 +15,10 @@
   <div id="archive-view" class="archive-container show">
     
     <div class="top-bar-menu">
-      <button id="btn-stats" class="btn-pixel small-btn" style="background: var(--card); color: var(--accent);">📊 STATS</button>
+      <div class="top-bar-left">
+        <button id="btn-stats" class="btn-pixel small-btn" style="background: var(--card); color: var(--accent);">📊 STATS</button>
+        <button id="btn-mute" class="btn-pixel small-btn" style="background: var(--card); color: var(--accent);">🔊</button>
+      </div>
       <div class="streak-badge">
         <span class="streak-icon">🔥</span>
         <span id="menu-streak">0</span>
@@ -40,9 +43,9 @@
       </summary>
       <div class="accordion-content">
         <p>🎯 Ajusta los tiradores para que la respuesta correcta quede dentro de tu horquilla.</p>
-        <p>💔 Cuanto más abras el rango para asegurar, más <strong>SALUD</strong> gastas en esa ronda.</p>
-        <p>💀 Si la respuesta cae fuera de tu rango o tu salud llega a 0, pierdes <strong>1 VIDA</strong>.</p>
-        <p>🏆 ¡Sobrevive a las 5 preguntas del día!</p>
+        <p>💔 Tienes <strong>200% de SALUD</strong>. Gastas salud según lo ancha que sea tu horquilla (para asegurar). Si tu salud llega a 0%, pierdes.</p>
+        <p>💀 Tienes <strong>3 VIDAS</strong>. Solo pierdes una vida si la respuesta correcta cae fuera de tu horquilla.</p>
+        <p>🏆 ¡Sobrevive a las 5 preguntas del día sin quedarte a 0 en salud o vidas!</p>
       </div>
     </details>
 
@@ -55,7 +58,7 @@
       <div id="current-week-grid" class="days-grid"></div>
     </div>
 
-    <!-- ARCHIVO COMPLETO OCULTO (DÍA 1 HASTA HOY) -->
+    <!-- ARCHIVO COMPLETO OCULTO -->
     <div id="full-archive-section" class="pixel-box hidden-archive">
       <h2>ARCHIVO DE NIVELES</h2>
       <div id="full-days-grid" class="days-grid"></div>
@@ -119,7 +122,7 @@
         <div class="status-group">
           <span>SALUD:</span>
           <div class="health-bar-bg"><div id="health-fill" class="health-bar-fill"></div></div>
-          <span id="health-text" class="mono">100%</span>
+          <span id="health-text" class="mono">200%</span>
         </div>
         <div class="status-group">
           <span>VIDAS:</span>
@@ -156,6 +159,9 @@
   </div>
 
   <div id="toast" class="toast">¡COPIADO AL PORTAPAPELES!</div>
+
+  <audio id="bg-music" src="musica.mp3" loop preload="auto"></audio>
+
   <script src="script.js"></script>
 </body>
 </html>
