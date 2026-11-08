@@ -33,18 +33,31 @@ const statsView = document.getElementById('stats-view');
 
 // 1. Inicialización
 fetch('datos.json')
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Error al cargar datos.json: ' + response.statusText);
+    }
+    return response.json();
+  })
   .then(data => {
     gameData = data;
-    const startDate = new Date(gameData.fecha_inicio + "T00:00:00").getTime();
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const dayDiff = Math.floor((today.getTime() - startDate) / (1000 * 60 * 60 * 24));
-    
-    currentOfficialDay = Math.max(1, dayDiff + 1);
-    calculateStreak();
-    renderArchive();
-    initCountdown();
+    if (gameData && gameData.fecha_inicio) {
+      const startDate = new Date(gameData.fecha_inicio + "T00:00:00").getTime();
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const dayDiff = Math.floor((today.getTime() - startDate) / (1000 * 60 * 60 * 24));
+      
+      currentOfficialDay = Math.max(1, dayDiff + 1);
+      calculateStreak();
+      renderArchive();
+      initCountdown();
+    } else {
+      console.error("El archivo JSON no tiene el formato esperado (falta fecha_inicio).");
+    }
+  })
+  .catch(error => {
+    console.error("Fallo crítico al iniciar el juego:", error);
+    alert("Error cargando los datos del juego. Asegúrate de que el archivo datos.json existe y es correcto.");
   });
 
 function initCountdown() {
@@ -359,7 +372,6 @@ function updateSliders() {
   
   costValTxt.textContent = `COSTE: ${costPercent}%`;
   
-  // El color del coste cambia a rojo si te estás pasando
   if (costPercent >= health) {
     costValTxt.style.color = 'var(--danger)';
     costValTxt.style.borderColor = 'var(--danger)';
@@ -368,7 +380,6 @@ function updateSliders() {
     costValTxt.style.borderColor = 'var(--accent)';
   }
 
-  // MENSAJE DE ADVERTENCIA MIENTRAS MUEVES LOS TIRADORES
   if (!isAnswered) {
     if (health < 100) {
         feedbackTxt.innerHTML = `¡CUIDADO! TU SALUD ES DE ${health}%, POR LO QUE TU HORQUILLA MÁXIMA PUEDE SER DE ${Math.max(0, health - 1)}%.`;
@@ -382,6 +393,14 @@ function updateSliders() {
 }
 
 function handleAction() {
+  // Nueva comprobación: Si el juego ha terminado, este botón vuelve al menú
+  if (isAnswered === 'gameover') {
+    gameView.classList.add('hidden');
+    archiveView.classList.add('show');
+    renderArchive();
+    return;
+  }
+  
   if (!isAnswered) {
     const q = playingDay.preguntas[currentIdx];
     const userMin = parseInt(minSlider.value, 10);
@@ -389,7 +408,6 @@ function handleAction() {
     const range = q.max - q.min;
     const costPercent = Math.round(((userMax - userMin) / range) * 100);
 
-    // --- NUEVO: BLOQUEO AL INTENTAR CONFIRMAR ---
     if (costPercent >= health) {
         const cardBox = document.getElementById('question-card-box');
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -399,8 +417,6 @@ function handleAction() {
         feedbackTxt.innerHTML = `¡ERROR!<br>LA HORQUILLA TIENE QUE SER MENOR QUE LA SALUD DISPONIBLE.`;
         feedbackTxt.className = 'feedback show error';
         feedbackTxt.style.color = 'var(--danger)';
-        
-        // Cortamos aquí, no se consume el turno ni se bloquean los tiradores
         return; 
     }
 
@@ -422,12 +438,8 @@ function handleAction() {
     }
 
     savedState.activeSession.answers.push({
-      q: q.texto,
-      min: userMin,
-      max: userMax,
-      resp: q.respuesta,
-      unidad: q.unidad,
-      correct: isCorrect 
+      q: q.texto, min: userMin, max: userMax,
+      resp: q.respuesta, unidad: q.unidad, correct: isCorrect 
     });
 
     const cardBox = document.getElementById('question-card-box');
@@ -458,21 +470,19 @@ function handleAction() {
     savedState.activeSession.lives = lives;
     savedState.activeSession.totalDamage = totalDamage;
 
+    // AÑADIDO EL RETRASO DE 1.5 SEGUNDOS (1500 ms) AL GANAR O PERDER
     if (lives <= 0) {
-      actionBtn.textContent = 'FIN DEL JUEGO (GAME OVER)';
-      actionBtn.style.background = 'var(--danger)';
-      actionBtn.style.color = '#fff';
+      actionBtn.textContent = 'COMPROBANDO...';
       actionBtn.disabled = true;
-      endGame('lost');
+      setTimeout(() => endGame('lost'), 1500);
     } else if (currentIdx < playingDay.preguntas.length - 1) {
       actionBtn.textContent = 'SIGUIENTE PREGUNTA';
       savedState.activeSession.qIdx = currentIdx + 1;
       saveStateToLocal();
     } else {
-      actionBtn.textContent = '¡NIVEL SUPERADO!';
-      actionBtn.style.background = 'var(--success)';
+      actionBtn.textContent = 'COMPROBANDO...';
       actionBtn.disabled = true;
-      endGame('won');
+      setTimeout(() => endGame('won'), 1500);
     }
   } else {
     currentIdx++;
@@ -481,12 +491,19 @@ function handleAction() {
 }
 
 function endGame(status) {
+  // Calculamos las vidas gastadas
+  const vidasGastadas = 3 - Math.max(0, lives);
+
   if (status === 'won') {
-    feedbackTxt.innerHTML = `¡VICTORIA!<br>DAÑO RECIBIDO: ${totalDamage}%`;
+    feedbackTxt.innerHTML = `¡VICTORIA!<br><span style="font-size: 1.4rem; color: #fff;">Daño recibido: ${totalDamage}%<br>Vidas perdidas: ${vidasGastadas}</span>`;
     feedbackTxt.style.color = 'var(--success)';
   } else {
-    feedbackTxt.innerHTML += `<br><span style="font-size: 1.2rem; color: #fff;">Saliendo al menú...</span>`;
+    feedbackTxt.innerHTML = `¡DERROTA!<br><span style="font-size: 1.4rem; color: #fff;">Te has quedado sin vidas.</span>`;
+    feedbackTxt.style.color = 'var(--danger)';
   }
+
+  // Inyectamos el botón de compartir dinámicamente
+  feedbackTxt.innerHTML += `<br><button id="btn-share-end" class="btn-pixel share-btn" style="margin-top: 15px; font-size: 1.4rem; padding: 10px;">COMPARTIR RESULTADO 📋</button>`;
 
   savedState.history[playingDay.dia] = { 
     status: status, 
@@ -498,11 +515,20 @@ function endGame(status) {
   saveStateToLocal();
   calculateStreak();
   
-  setTimeout(() => {
-    gameView.classList.add('hidden');
-    archiveView.classList.add('show');
-    renderArchive();
-  }, 4000); 
+  // Le damos funcionalidad al botón de compartir que acabamos de crear
+  document.getElementById('btn-share-end').addEventListener('click', () => {
+    currentReviewDay = playingDay.dia; 
+    document.getElementById('btn-share').click(); // Reutilizamos tu botón de compartir existente
+  });
+
+  // Convertimos el botón principal en el botón para salir (eliminando el temporizador automático)
+  actionBtn.textContent = 'VOLVER AL MENÚ';
+  actionBtn.style.background = 'var(--track)';
+  actionBtn.style.color = '#fff';
+  actionBtn.disabled = false;
+  
+  // Marcamos el estado como gameover para que handleAction sepa que tiene que cerrar
+  isAnswered = 'gameover'; 
 }
 
 function saveStateToLocal() { localStorage.setItem('horquillaState', JSON.stringify(savedState)); }
